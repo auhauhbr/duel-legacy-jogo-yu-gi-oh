@@ -24,6 +24,13 @@ export {
 } from "./phases/phase-transitions.js";
 export { createInitialPlayerState } from "./players/create-initial-player-state.js";
 export type { DuelPlayerState } from "./players/duel-player-state.js";
+export {
+  createDeterministicRng,
+  nextRandomFloat,
+  nextRandomInt,
+  nextRandomUint32,
+} from "./random/index.js";
+export type { DeterministicRngState, RandomResult } from "./random/index.js";
 export { gxLegacyProfile } from "./rules/gx-legacy.js";
 export { validateRulesProfile } from "./rules/validate-rules-profile.js";
 export type {
