@@ -1,0 +1,11 @@
+export type CardLocation =
+  | "MAIN_DECK"
+  | "HAND"
+  | "MONSTER_ZONE"
+  | "SPELL_TRAP_ZONE"
+  | "FIELD_ZONE"
+  | "GRAVEYARD"
+  | "BANISHED_FACE_UP"
+  | "BANISHED_FACE_DOWN"
+  | "EXTRA_DECK_FACE_DOWN"
+  | "EXTRA_DECK_FACE_UP";
