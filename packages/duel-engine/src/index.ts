@@ -10,6 +10,18 @@ export type {
   DuelId,
   PlayerId,
 } from "./identifiers/identifiers.js";
+export type { BattleStep } from "./phases/battle-step.js";
+export type { DamageStepWindow } from "./phases/damage-step-window.js";
+export type { DuelPhase } from "./phases/duel-phase.js";
+export {
+  BATTLE_STEP_ORDER,
+  DAMAGE_STEP_WINDOW_ORDER,
+  STANDARD_PHASE_ORDER,
+} from "./phases/phase-order.js";
+export {
+  getNextStandardPhase,
+  isValidStandardPhaseTransition,
+} from "./phases/phase-transitions.js";
 export { createInitialPlayerState } from "./players/create-initial-player-state.js";
 export type { DuelPlayerState } from "./players/duel-player-state.js";
 export { gxLegacyProfile } from "./rules/gx-legacy.js";

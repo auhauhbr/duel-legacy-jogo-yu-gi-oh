@@ -1,0 +1,6 @@
+export type DamageStepWindow =
+  | "START"
+  | "BEFORE_DAMAGE_CALCULATION"
+  | "DAMAGE_CALCULATION"
+  | "AFTER_DAMAGE_CALCULATION"
+  | "END";
