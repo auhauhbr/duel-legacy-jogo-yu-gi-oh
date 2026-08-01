@@ -29,8 +29,13 @@ export {
   nextRandomFloat,
   nextRandomInt,
   nextRandomUint32,
+  shuffleDeterministically,
 } from "./random/index.js";
-export type { DeterministicRngState, RandomResult } from "./random/index.js";
+export type {
+  DeterministicRngState,
+  RandomResult,
+  ShuffleResult,
+} from "./random/index.js";
 export { gxLegacyProfile } from "./rules/gx-legacy.js";
 export { validateRulesProfile } from "./rules/validate-rules-profile.js";
 export type {
