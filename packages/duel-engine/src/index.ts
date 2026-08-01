@@ -23,6 +23,8 @@ export {
   isValidStandardPhaseTransition,
 } from "./phases/phase-transitions.js";
 export { createInitialPlayerState } from "./players/create-initial-player-state.js";
+export { drawCardsFromMainDeck } from "./players/draw-cards-from-main-deck.js";
+export type { DrawCardsResult } from "./players/draw-cards-from-main-deck.js";
 export type { DuelPlayerState } from "./players/duel-player-state.js";
 export {
   createDeterministicRng,
