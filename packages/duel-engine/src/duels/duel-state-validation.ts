@@ -1,4 +1,4 @@
-import type { CardInstanceId } from "../identifiers/identifiers.js";
+import type { CardInstanceId, PlayerId } from "../identifiers/identifiers.js";
 import type { DuelPlayerState } from "../players/duel-player-state.js";
 import type { RulesProfile } from "../rules/rules-profile.js";
 
@@ -35,6 +35,38 @@ export function validatePlayerZones(
     ) {
       throw new Error("As zonas do jogador são incompatíveis com o perfil.");
     }
+  }
+}
+
+export function validateExactlyTwoPlayers(
+  players: readonly DuelPlayerState[],
+): asserts players is readonly [DuelPlayerState, DuelPlayerState] {
+  if (players.length !== 2 || !players[0] || !players[1]) {
+    throw new Error("O Duelo deve possuir exatamente dois jogadores.");
+  }
+
+  if (players[0].playerId === players[1].playerId) {
+    throw new Error("Os jogadores devem possuir IDs diferentes.");
+  }
+}
+
+export function validateTurnOrder(
+  players: readonly [DuelPlayerState, DuelPlayerState],
+  turnOrder: readonly PlayerId[],
+): asserts turnOrder is readonly [PlayerId, PlayerId] {
+  if (turnOrder.length !== 2) {
+    throw new Error("turnOrder deve conter exatamente dois jogadores.");
+  }
+
+  const playerIds = new Set(players.map(({ playerId }) => playerId));
+  const turnOrderIds = new Set(turnOrder);
+
+  if (
+    turnOrderIds.size !== 2 ||
+    turnOrder.some((playerId) => !playerIds.has(playerId)) ||
+    playerIds.size !== turnOrderIds.size
+  ) {
+    throw new Error("turnOrder é incompatível com os jogadores do Duelo.");
   }
 }
 

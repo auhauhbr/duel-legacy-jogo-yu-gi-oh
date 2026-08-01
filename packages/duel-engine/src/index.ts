@@ -6,6 +6,7 @@ export { createInitialDuelState } from "./duels/create-initial-duel-state.js";
 export type { DuelState } from "./duels/duel-state.js";
 export type { DuelStatus } from "./duels/duel-status.js";
 export { prepareInitialDuelState } from "./duels/prepare-initial-duel-state.js";
+export { startFirstTurn } from "./duels/start-first-turn.js";
 export type {
   CardInstanceId,
   DuelId,

@@ -7,26 +7,11 @@ import type { RulesProfile } from "../rules/rules-profile.js";
 import { validateRulesProfile } from "../rules/validate-rules-profile.js";
 import type { DuelState } from "./duel-state.js";
 import {
+  validateExactlyTwoPlayers,
   validatePlayerZones,
+  validateTurnOrder,
   validateUniqueCardInstanceIds,
 } from "./duel-state-validation.js";
-
-function validateTurnOrder(duelState: DuelState): void {
-  if (duelState.turnOrder.length !== 2) {
-    throw new Error("turnOrder deve conter exatamente dois jogadores.");
-  }
-
-  const playerIds = new Set(duelState.players.map(({ playerId }) => playerId));
-  const turnOrderIds = new Set(duelState.turnOrder);
-
-  if (
-    playerIds.size !== 2 ||
-    turnOrderIds.size !== 2 ||
-    duelState.turnOrder.some((playerId) => !playerIds.has(playerId))
-  ) {
-    throw new Error("turnOrder é incompatível com os jogadores do Duelo.");
-  }
-}
 
 function validateArguments(
   duelState: DuelState,
@@ -53,11 +38,8 @@ function validateArguments(
     throw new Error("A seed não pode ser vazia.");
   }
 
-  if (duelState.players.length !== 2) {
-    throw new Error("O Duelo deve possuir exatamente dois jogadores.");
-  }
-
-  validateTurnOrder(duelState);
+  validateExactlyTwoPlayers(duelState.players);
+  validateTurnOrder(duelState.players, duelState.turnOrder);
 
   for (const player of duelState.players) {
     if (player.mainDeck.length < profile.startingHandSize) {

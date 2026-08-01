@@ -80,6 +80,10 @@ describe("createInitialDuelState", () => {
     expect(createDuel().currentPlayerId).toBeNull();
   });
 
+  it("começa com phase igual a null", () => {
+    expect(createDuel().phase).toBeNull();
+  });
+
   it("começa sem vencedor", () => {
     expect(createDuel().winnerId).toBeNull();
   });

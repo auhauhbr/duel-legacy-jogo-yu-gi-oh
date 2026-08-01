@@ -135,6 +135,16 @@ describe("prepareInitialDuelState", () => {
     expect(prepared.resultReason).toBeNull();
   });
 
+  it("continua com phase igual a null", () => {
+    const prepared = prepareInitialDuelState(
+      createDuel(),
+      gxLegacyProfile,
+      "phase-seed",
+    );
+
+    expect(prepared.phase).toBeNull();
+  });
+
   it("armazena o estado final do RNG", () => {
     const duel = createDuel();
     const expected = getExpectedShuffles(duel, "rng-state-seed");

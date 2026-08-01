@@ -106,6 +106,7 @@ export function createInitialDuelState(
     status: "PREPARING",
     turnNumber: 0,
     currentPlayerId: null,
+    phase: null,
     winnerId: null,
     resultReason: null,
   };
