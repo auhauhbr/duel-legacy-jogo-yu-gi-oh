@@ -6,10 +6,12 @@ export { createInitialDuelState } from "./duels/create-initial-duel-state.js";
 export type { DuelResultReason } from "./duels/duel-result-reason.js";
 export type { DuelState } from "./duels/duel-state.js";
 export type { DuelStatus } from "./duels/duel-status.js";
+export { getLegalMainPhaseOneTransitions } from "./duels/get-legal-main-phase-one-transitions.js";
 export { prepareInitialDuelState } from "./duels/prepare-initial-duel-state.js";
 export { processDrawPhase } from "./duels/process-draw-phase.js";
 export { processStandbyPhase } from "./duels/process-standby-phase.js";
 export { startFirstTurn } from "./duels/start-first-turn.js";
+export { transitionFromMainPhaseOne } from "./duels/transition-from-main-phase-one.js";
 export type {
   CardInstanceId,
   DuelId,
