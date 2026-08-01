@@ -1,5 +1,6 @@
 import type { DuelId, PlayerId } from "../identifiers/identifiers.js";
 import type { DuelPlayerState } from "../players/duel-player-state.js";
+import type { DeterministicRngState } from "../random/deterministic-rng.js";
 import type { DuelStatus } from "./duel-status.js";
 
 export interface DuelState {
@@ -10,6 +11,7 @@ export interface DuelState {
 
   readonly players: readonly [DuelPlayerState, DuelPlayerState];
   readonly turnOrder: readonly [PlayerId, PlayerId];
+  readonly rngState: DeterministicRngState | null;
 
   readonly status: DuelStatus;
   readonly turnNumber: number;

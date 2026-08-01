@@ -1,34 +1,12 @@
-import type {
-  CardInstanceId,
-  DuelId,
-  PlayerId,
-} from "../identifiers/identifiers.js";
+import type { DuelId, PlayerId } from "../identifiers/identifiers.js";
 import type { DuelPlayerState } from "../players/duel-player-state.js";
 import type { RulesProfile } from "../rules/rules-profile.js";
 import { validateRulesProfile } from "../rules/validate-rules-profile.js";
 import type { DuelState } from "./duel-state.js";
-
-function getCardInstanceIds(player: DuelPlayerState): CardInstanceId[] {
-  const occupiedMonsterZones = player.monsterZones.filter(
-    (cardId): cardId is CardInstanceId => cardId !== null,
-  );
-  const occupiedSpellTrapZones = player.spellTrapZones.filter(
-    (cardId): cardId is CardInstanceId => cardId !== null,
-  );
-
-  return [
-    ...player.mainDeck,
-    ...player.hand,
-    ...player.graveyard,
-    ...player.banishedFaceUp,
-    ...player.banishedFaceDown,
-    ...player.extraDeckFaceDown,
-    ...player.extraDeckFaceUp,
-    ...occupiedMonsterZones,
-    ...occupiedSpellTrapZones,
-    ...(player.fieldZone === null ? [] : [player.fieldZone]),
-  ];
-}
+import {
+  validatePlayerZones,
+  validateUniqueCardInstanceIds,
+} from "./duel-state-validation.js";
 
 function clonePlayerState(player: DuelPlayerState): DuelPlayerState {
   return {
@@ -90,20 +68,8 @@ function validateArguments(
     throw new Error("O jogador inicial deve pertencer ao Duelo.");
   }
 
-  for (const player of players) {
-    if (
-      player.monsterZones.length !== profile.mainMonsterZones ||
-      player.spellTrapZones.length !== profile.spellTrapZones
-    ) {
-      throw new Error("As zonas do jogador são incompatíveis com o perfil.");
-    }
-  }
-
-  const allCardIds = players.flatMap(getCardInstanceIds);
-
-  if (new Set(allCardIds).size !== allCardIds.length) {
-    throw new Error("IDs de instância de carta devem ser únicos no Duelo.");
-  }
+  validatePlayerZones(players, profile);
+  validateUniqueCardInstanceIds(players);
 }
 
 export function createInitialDuelState(
@@ -136,6 +102,7 @@ export function createInitialDuelState(
     cardPoolVersion,
     players: [clonePlayerState(firstPlayer), clonePlayerState(secondPlayer)],
     turnOrder,
+    rngState: null,
     status: "PREPARING",
     turnNumber: 0,
     currentPlayerId: null,

@@ -88,6 +88,10 @@ describe("createInitialDuelState", () => {
     expect(createDuel().resultReason).toBeNull();
   });
 
+  it("começa com rngState igual a null", () => {
+    expect(createDuel().rngState).toBeNull();
+  });
+
   it("cria turnOrder começando pelo primeiro jogador escolhido", () => {
     expect(createDuel().turnOrder).toEqual(["player-1", "player-2"]);
   });
