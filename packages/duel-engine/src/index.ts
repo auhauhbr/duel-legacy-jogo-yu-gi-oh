@@ -3,9 +3,11 @@ export const duelEngineVersion = "0.0.0";
 export type { CardLocation } from "./cards/card-location.js";
 export type { CardPosition } from "./cards/card-position.js";
 export { createInitialDuelState } from "./duels/create-initial-duel-state.js";
+export type { DuelResultReason } from "./duels/duel-result-reason.js";
 export type { DuelState } from "./duels/duel-state.js";
 export type { DuelStatus } from "./duels/duel-status.js";
 export { prepareInitialDuelState } from "./duels/prepare-initial-duel-state.js";
+export { processDrawPhase } from "./duels/process-draw-phase.js";
 export { startFirstTurn } from "./duels/start-first-turn.js";
 export type {
   CardInstanceId,

@@ -290,7 +290,7 @@ describe("startFirstTurn", () => {
   it("rejeita resultReason já definido", () => {
     const invalid: DuelState = {
       ...createPreparedDuel(),
-      resultReason: "INVALID_RESULT",
+      resultReason: "DECK_OUT",
     };
 
     expect(() => startFirstTurn(invalid, gxLegacyProfile)).toThrow(
