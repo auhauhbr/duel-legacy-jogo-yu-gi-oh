@@ -11,6 +11,7 @@ export { prepareInitialDuelState } from "./duels/prepare-initial-duel-state.js";
 export { processDrawPhase } from "./duels/process-draw-phase.js";
 export { processStandbyPhase } from "./duels/process-standby-phase.js";
 export { startFirstTurn } from "./duels/start-first-turn.js";
+export { startNextTurn } from "./duels/start-next-turn.js";
 export { transitionFromMainPhaseOne } from "./duels/transition-from-main-phase-one.js";
 export type {
   CardInstanceId,
