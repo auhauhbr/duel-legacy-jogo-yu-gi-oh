@@ -8,6 +8,7 @@ export type { DuelState } from "./duels/duel-state.js";
 export type { DuelStatus } from "./duels/duel-status.js";
 export { prepareInitialDuelState } from "./duels/prepare-initial-duel-state.js";
 export { processDrawPhase } from "./duels/process-draw-phase.js";
+export { processStandbyPhase } from "./duels/process-standby-phase.js";
 export { startFirstTurn } from "./duels/start-first-turn.js";
 export type {
   CardInstanceId,
