@@ -5,23 +5,23 @@
   "type": "module",
   "packageManager": "pnpm@11.18.0",
   "scripts": {
-    "build": "pnpm --recursive --if-present run build",
-    "test": "vitest run",
-    "lint": "eslint .",
-    "typecheck": "pnpm --recursive --if-present run typecheck",
+    "build": "node scripts/run-task.mjs build",
+    "test": "node scripts/run-task.mjs test",
+    "lint": "node scripts/run-task.mjs lint",
+    "typecheck": "node scripts/run-task.mjs typecheck",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "node scripts/run-task.mjs format:check",
+    "dev:web": "pnpm --filter @duel-legacy/web dev",
+    "dev:api": "composer --working-dir=apps/api serve"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/node": "^26.1.2",
     "@vitejs/plugin-react": "^6.0.5",
     "eslint": "^10.8.0",
     "globals": "^17.8.0",
     "prettier": "^3.9.6",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.65.0",
-    "vite": "^8.2.0",
-    "vitest": "^4.1.10"
+    "vite": "^8.2.0"
   }
 }

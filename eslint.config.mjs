@@ -8,6 +8,7 @@ export default tseslint.config(
       "**/dist/**",
       "**/coverage/**",
       "**/node_modules/**",
+      "**/vendor/**",
       ".codex/**",
     ],
   },
@@ -20,7 +21,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["apps/api/**/*.ts", "*.{ts,mts,cts}"],
+    files: ["*.{js,mjs,cjs,ts,mts,cts}", "scripts/**/*.{js,mjs,cjs}"],
     languageOptions: {
       globals: globals.node,
     },
