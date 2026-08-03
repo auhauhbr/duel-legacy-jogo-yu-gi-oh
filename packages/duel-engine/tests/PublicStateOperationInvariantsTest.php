@@ -13,6 +13,7 @@ use DuelLegacy\DuelEngine\Tests\Support\TestFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+use function DuelLegacy\DuelEngine\discardEndPhaseHandExcess;
 use function DuelLegacy\DuelEngine\getLegalMainPhaseOneTransitions;
 use function DuelLegacy\DuelEngine\getRequiredEndPhaseDiscardCount;
 use function DuelLegacy\DuelEngine\gxLegacyProfile;
@@ -63,6 +64,12 @@ final class PublicStateOperationInvariantsTest extends TestCase
             'getRequiredEndPhaseDiscardCount' => [
                 'phase' => DuelPhase::END,
                 'status' => 'Somente um Duelo ACTIVE pode consultar o descarte.',
+                'wrongPhase' => 'O Duelo deve estar na fase END.',
+                'current' => 'A Fase Final deve possuir jogador atual.',
+            ],
+            'discardEndPhaseHandExcess' => [
+                'phase' => DuelPhase::END,
+                'status' => 'Somente um Duelo ACTIVE pode descartar o excesso da mão na Fase Final.',
                 'wrongPhase' => 'O Duelo deve estar na fase END.',
                 'current' => 'A Fase Final deve possuir jogador atual.',
             ],
@@ -286,6 +293,7 @@ final class PublicStateOperationInvariantsTest extends TestCase
             'transitionFromMainPhaseOne' => transitionFromMainPhaseOne($state, $profile, DuelPhase::END),
             'startNextTurn' => startNextTurn($state, $profile),
             'getRequiredEndPhaseDiscardCount' => getRequiredEndPhaseDiscardCount($state, $profile),
+            'discardEndPhaseHandExcess' => discardEndPhaseHandExcess($state, $profile, []),
             default => throw new \LogicException("Operação desconhecida: {$operation}"),
         };
     }

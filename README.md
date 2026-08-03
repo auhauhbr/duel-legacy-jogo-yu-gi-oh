@@ -110,11 +110,12 @@ pela Konami.
 - Fase Final;
 - alternância entre jogadores e início do próximo turno;
 - controle de Invocação-Normal;
-- cálculo do excesso de cartas na mão.
+- cálculo do excesso de cartas na mão;
+- descarte obrigatório do excesso da mão na Fase Final, sem iniciar o próximo
+  turno.
 
 ### 🚧 Em desenvolvimento
 
-- descarte obrigatório na Fase Final;
 - conclusão do processamento da Fase Final;
 - comandos e eventos de Duelo;
 - modelo completo de cartas;
@@ -132,16 +133,16 @@ pela Konami.
 
 ## Funcionalidades implementadas
 
-| Área             | Entregas atuais                                                                                    |
-| ---------------- | -------------------------------------------------------------------------------------------------- |
-| Fundação         | Monorepo, contratos OpenAPI, API Laravel e pacotes Composer separados                              |
-| Perfil de regras | `GX_LEGACY`, 8.000 LP, mão inicial de 5 cartas, limites de Deck e zonas                            |
-| Estado           | Jogadores, Duelo, zonas, fases, posições, identificadores e validações estruturais                 |
-| Aleatoriedade    | Seed explícita, RNG reproduzível, serialização e Fisher–Yates determinístico                       |
-| Preparação       | Embaralhamento dos dois Decks, distribuição das mãos e início do primeiro turno                    |
-| Fluxo            | Compra, Deck Out, Apoio, Principal 1, Fase Final e troca estrutural de turno                       |
-| Restrições       | Sem compra nem batalha no primeiro turno, controle de Invocação-Normal e consulta do limite da mão |
-| Integração       | Health check público e teste do carregamento do motor pela aplicação Laravel                       |
+| Área             | Entregas atuais                                                                                               |
+| ---------------- | ------------------------------------------------------------------------------------------------------------- |
+| Fundação         | Monorepo, contratos OpenAPI, API Laravel e pacotes Composer separados                                         |
+| Perfil de regras | `GX_LEGACY`, 8.000 LP, mão inicial de 5 cartas, limites de Deck e zonas                                       |
+| Estado           | Jogadores, Duelo, zonas, fases, posições, identificadores e validações estruturais                            |
+| Aleatoriedade    | Seed explícita, RNG reproduzível, serialização e Fisher–Yates determinístico                                  |
+| Preparação       | Embaralhamento dos dois Decks, distribuição das mãos e início do primeiro turno                               |
+| Fluxo            | Compra, Deck Out, Apoio, Principal 1, Fase Final e troca estrutural de turno                                  |
+| Restrições       | Sem compra nem batalha no primeiro turno, controle de Invocação-Normal, consulta e descarte do excesso da mão |
+| Integração       | Health check público e teste do carregamento do motor pela aplicação Laravel                                  |
 
 O escopo implementado ainda é estrutural. Efeitos de cartas, resolução de
 Correntes e uma partida completa não fazem parte da entrega atual.
@@ -247,11 +248,11 @@ O RNG foi projetado para repetibilidade do jogo, não para uso criptográfico.
 
 | Suíte atual   |  Testes | Assertions |
 | ------------- | ------: | ---------: |
-| `duel-engine` |     368 |      6.439 |
+| `duel-engine` |     442 |      6.663 |
 | API Laravel   |       2 |          4 |
-| **Total**     | **370** |  **6.443** |
+| **Total**     | **444** |  **6.667** |
 
-O motor possui **20 classes de teste** e **16 DataProviders**. O teste isolado
+O motor possui **21 classes de teste** e **21 DataProviders**. O teste isolado
 de paridade executa **4 testes e 193 assertions**, cobrindo RNG, embaralhamento,
 serialização e fluxo estrutural contra os vetores preservados da migração.
 
@@ -374,7 +375,7 @@ health check ou executar a suíte atual.
 
 ### Próximas etapas
 
-- descarte obrigatório da Fase Final;
+- processamento restante da Fase Final;
 - fechamento completo do turno;
 - modelo de cartas;
 - ações legais;
