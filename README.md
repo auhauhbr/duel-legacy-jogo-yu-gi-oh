@@ -116,12 +116,14 @@ pela Konami.
 - modelo mínimo e imutável de definições de cartas;
 - diferenciação estrutural entre Monstro, Magia e Armadilha;
 - Atributos, Nível, ATK, DEF e categorias estruturais de Monstros;
-- subtipos estruturais de Magias e Armadilhas.
+- subtipos estruturais de Magias e Armadilhas;
+- instância mínima e imutável de carta, com ID físico separado do ID lógico da
+  definição e referência tipada para `CardDefinition`.
 
 ### 🚧 Em desenvolvimento
 
 - comandos e eventos de Duelo;
-- integração das definições de cartas às instâncias do Duelo;
+- integração das instâncias de cartas às zonas do Duelo;
 - catálogo e efeitos executáveis de cartas;
 - geração de ações legais;
 - primeira interface de depuração do Duelo.
@@ -143,16 +145,16 @@ pela Konami.
 | Perfil de regras | `GX_LEGACY`, 8.000 LP, mão inicial de 5 cartas, limites de Deck e zonas                                       |
 | Estado           | Jogadores, Duelo, zonas, fases, posições, identificadores e validações estruturais                            |
 | Aleatoriedade    | Seed explícita, RNG reproduzível, serialização e Fisher–Yates determinístico                                  |
-| Cartas           | Definições readonly de Monstro, Magia e Armadilha, com enums e validações estruturais                         |
+| Cartas           | Definições readonly e instâncias mínimas tipadas, com IDs físico e lógico separados                           |
 | Preparação       | Embaralhamento dos dois Decks, distribuição das mãos e início do primeiro turno                               |
 | Fluxo            | Compra, Deck Out, Apoio, Principal 1 e processamento estrutural da Fase Final até o próximo turno             |
 | Restrições       | Sem compra nem batalha no primeiro turno, controle de Invocação-Normal, consulta e descarte do excesso da mão |
 | Integração       | Health check público e teste do carregamento do motor pela aplicação Laravel                                  |
 
-O escopo implementado ainda é estrutural. As definições não possuem efeitos
-executáveis, Correntes ou ações legais, e ainda não há catálogo nem integração
-completa entre definições e os IDs de instância usados nas zonas do Duelo.
-Nenhuma carta real está cadastrada.
+O escopo implementado ainda é estrutural. As instâncias referenciam definições
+tipadas, mas as zonas ainda armazenam seus IDs como strings. Não há catálogo,
+registro global de instâncias, efeitos executáveis, Correntes, ações legais,
+persistência ou cartas reais cadastradas.
 
 ## Arquitetura
 
@@ -255,11 +257,11 @@ O RNG foi projetado para repetibilidade do jogo, não para uso criptográfico.
 
 | Suíte atual   |  Testes | Assertions |
 | ------------- | ------: | ---------: |
-| `duel-engine` |     575 |      7.209 |
+| `duel-engine` |     586 |      7.262 |
 | API Laravel   |       2 |          4 |
-| **Total**     | **577** |  **7.213** |
+| **Total**     | **588** |  **7.266** |
 
-O motor possui **27 classes de teste** e **32 DataProviders**. O teste isolado
+O motor possui **28 classes de teste** e **33 DataProviders**. O teste isolado
 de paridade executa **4 testes e 193 assertions**, cobrindo RNG, embaralhamento,
 serialização e fluxo estrutural contra os vetores preservados da migração.
 
@@ -377,14 +379,14 @@ health check ou executar a suíte atual.
 - monorepo e contratos neutros;
 - regras básicas, estados, fases, processamento estrutural da Fase Final e
   turnos;
-- modelo mínimo e imutável de definições de cartas;
+- modelos mínimos e imutáveis de definições e instâncias de cartas;
 - RNG e embaralhamento determinísticos;
 - migração do backend e dos motores para PHP;
 - testes automatizados e ferramentas de qualidade.
 
 ### Próximas etapas
 
-- integração das definições às instâncias do Duelo;
+- integração incremental das instâncias às zonas do Duelo;
 - catálogo de cartas;
 - ações legais;
 - comandos e eventos;
@@ -423,7 +425,8 @@ marcos correspondentes, sem serem tratadas como tecnologias atuais.
 - não há mesa visual jogável;
 - não há efeitos executáveis, Correntes ou ações legais de cartas;
 - não há catálogo de cartas nem cartas reais cadastradas;
-- as definições ainda não estão integradas às instâncias e zonas do Duelo;
+- não há registro global de instâncias;
+- as instâncias ainda não estão integradas às zonas do Duelo;
 - o processamento da Fase Final não resolve efeitos, Correntes ou efeitos
   pendentes;
 - o início do próximo turno não processa automaticamente a Fase de Compra;
