@@ -131,6 +131,12 @@ function discardEndPhaseHandExcess(DuelState $duelState, RulesProfile $profile, 
     return Engine::discardEndPhaseHandExcess($duelState, $profile, $selectedCardInstanceIds);
 }
 
+/** @param list<string> $selectedCardInstanceIds */
+function processEndPhase(DuelState $duelState, RulesProfile $profile, array $selectedCardInstanceIds): DuelState
+{
+    return Engine::processEndPhase($duelState, $profile, $selectedCardInstanceIds);
+}
+
 function getNextStandardPhase(DuelPhase $currentPhase): ?DuelPhase
 {
     return Engine::getNextStandardPhase($currentPhase);

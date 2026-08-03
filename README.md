@@ -107,16 +107,15 @@ pela Konami.
 - Fase de Apoio;
 - entrada e transições da Fase Principal 1;
 - bloqueio da Fase de Batalha no primeiro turno;
-- Fase Final;
+- entrada na Fase Final;
 - alternância entre jogadores e início do próximo turno;
 - controle de Invocação-Normal;
 - cálculo do excesso de cartas na mão;
-- descarte obrigatório do excesso da mão na Fase Final, sem iniciar o próximo
-  turno.
+- processamento estrutural da Fase Final, com descarte obrigatório do excesso
+  da mão seguido do início do próximo turno.
 
 ### 🚧 Em desenvolvimento
 
-- conclusão do processamento da Fase Final;
 - comandos e eventos de Duelo;
 - modelo completo de cartas;
 - geração de ações legais;
@@ -140,7 +139,7 @@ pela Konami.
 | Estado           | Jogadores, Duelo, zonas, fases, posições, identificadores e validações estruturais                            |
 | Aleatoriedade    | Seed explícita, RNG reproduzível, serialização e Fisher–Yates determinístico                                  |
 | Preparação       | Embaralhamento dos dois Decks, distribuição das mãos e início do primeiro turno                               |
-| Fluxo            | Compra, Deck Out, Apoio, Principal 1, Fase Final e troca estrutural de turno                                  |
+| Fluxo            | Compra, Deck Out, Apoio, Principal 1 e processamento estrutural da Fase Final até o próximo turno             |
 | Restrições       | Sem compra nem batalha no primeiro turno, controle de Invocação-Normal, consulta e descarte do excesso da mão |
 | Integração       | Health check público e teste do carregamento do motor pela aplicação Laravel                                  |
 
@@ -248,11 +247,11 @@ O RNG foi projetado para repetibilidade do jogo, não para uso criptográfico.
 
 | Suíte atual   |  Testes | Assertions |
 | ------------- | ------: | ---------: |
-| `duel-engine` |     442 |      6.663 |
+| `duel-engine` |     500 |      7.028 |
 | API Laravel   |       2 |          4 |
-| **Total**     | **444** |  **6.667** |
+| **Total**     | **502** |  **7.032** |
 
-O motor possui **21 classes de teste** e **21 DataProviders**. O teste isolado
+O motor possui **22 classes de teste** e **25 DataProviders**. O teste isolado
 de paridade executa **4 testes e 193 assertions**, cobrindo RNG, embaralhamento,
 serialização e fluxo estrutural contra os vetores preservados da migração.
 
@@ -368,15 +367,14 @@ health check ou executar a suíte atual.
 ### Fundação concluída
 
 - monorepo e contratos neutros;
-- regras básicas, estados, fases e turnos;
+- regras básicas, estados, fases, processamento estrutural da Fase Final e
+  turnos;
 - RNG e embaralhamento determinísticos;
 - migração do backend e dos motores para PHP;
 - testes automatizados e ferramentas de qualidade.
 
 ### Próximas etapas
 
-- processamento restante da Fase Final;
-- fechamento completo do turno;
 - modelo de cartas;
 - ações legais;
 - comandos e eventos;
@@ -414,6 +412,9 @@ marcos correspondentes, sem serem tratadas como tecnologias atuais.
 - o bot ainda não possui estratégia;
 - não há mesa visual jogável;
 - não há modelo completo de efeitos;
+- o processamento da Fase Final não resolve efeitos, Correntes ou efeitos
+  pendentes;
+- o início do próximo turno não processa automaticamente a Fase de Compra;
 - os value objects de identificadores ainda não estão integrados a todas as
   assinaturas internas;
 - a garantia de imutabilidade genérica não significa clone profundo de objetos

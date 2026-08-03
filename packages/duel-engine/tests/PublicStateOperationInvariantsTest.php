@@ -18,6 +18,7 @@ use function DuelLegacy\DuelEngine\getLegalMainPhaseOneTransitions;
 use function DuelLegacy\DuelEngine\getRequiredEndPhaseDiscardCount;
 use function DuelLegacy\DuelEngine\gxLegacyProfile;
 use function DuelLegacy\DuelEngine\processDrawPhase;
+use function DuelLegacy\DuelEngine\processEndPhase;
 use function DuelLegacy\DuelEngine\processStandbyPhase;
 use function DuelLegacy\DuelEngine\startFirstTurn;
 use function DuelLegacy\DuelEngine\startNextTurn;
@@ -68,6 +69,12 @@ final class PublicStateOperationInvariantsTest extends TestCase
                 'current' => 'A Fase Final deve possuir jogador atual.',
             ],
             'discardEndPhaseHandExcess' => [
+                'phase' => DuelPhase::END,
+                'status' => 'Somente um Duelo ACTIVE pode descartar o excesso da mão na Fase Final.',
+                'wrongPhase' => 'O Duelo deve estar na fase END.',
+                'current' => 'A Fase Final deve possuir jogador atual.',
+            ],
+            'processEndPhase' => [
                 'phase' => DuelPhase::END,
                 'status' => 'Somente um Duelo ACTIVE pode descartar o excesso da mão na Fase Final.',
                 'wrongPhase' => 'O Duelo deve estar na fase END.',
@@ -294,6 +301,7 @@ final class PublicStateOperationInvariantsTest extends TestCase
             'startNextTurn' => startNextTurn($state, $profile),
             'getRequiredEndPhaseDiscardCount' => getRequiredEndPhaseDiscardCount($state, $profile),
             'discardEndPhaseHandExcess' => discardEndPhaseHandExcess($state, $profile, []),
+            'processEndPhase' => processEndPhase($state, $profile, []),
             default => throw new \LogicException("Operação desconhecida: {$operation}"),
         };
     }
