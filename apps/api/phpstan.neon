@@ -1,0 +1,9 @@
+parameters:
+    level: 8
+    paths:
+        - app
+        - routes
+        - tests
+    tmpDir: .phpstan.cache
+    bootstrapFiles:
+        - vendor/autoload.php

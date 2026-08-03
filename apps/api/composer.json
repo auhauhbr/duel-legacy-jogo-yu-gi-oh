@@ -1,0 +1,58 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "duel-legacy/api",
+    "description": "API HTTP Laravel do Duel Legacy.",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.3",
+        "duel-legacy/duel-engine": "0.0.0",
+        "laravel/framework": "^13.8"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.27",
+        "nunomaduro/collision": "^8.6",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^13.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../packages/duel-engine",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "duel-legacy/duel-engine": "0.0.0"
+                }
+            }
+        }
+    ],
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "serve": "@php artisan serve --host=0.0.0.0 --port=3000",
+        "test": "phpunit",
+        "analyse": "phpstan analyse --no-progress --memory-limit=512M",
+        "format": "pint app bootstrap/app.php bootstrap/providers.php config public routes tests ../../packages/duel-engine/src ../../packages/duel-engine/tests ../../packages/bot-engine/src ../../scripts/check-php-syntax.php",
+        "format:check": "pint --test app bootstrap/app.php bootstrap/providers.php config public routes tests ../../packages/duel-engine/src ../../packages/duel-engine/tests ../../packages/bot-engine/src ../../scripts/check-php-syntax.php"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
