@@ -1,0 +1,40 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "duel-legacy/bot-engine",
+    "description": "Fundação dos bots do Duel Legacy.",
+    "type": "library",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.3",
+        "duel-legacy/duel-engine": "0.0.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "DuelLegacy\\BotEngine\\": "src/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../duel-engine",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "duel-legacy/duel-engine": "0.0.0"
+                }
+            }
+        }
+    ],
+    "scripts": {
+        "analyse": "phpstan analyse --no-progress --memory-limit=512M"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
