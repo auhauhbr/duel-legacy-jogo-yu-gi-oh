@@ -557,6 +557,17 @@ final class Engine
         return self::copyState($duelState, ['players' => $players]);
     }
 
+    /** @param list<string> $selectedCardInstanceIds */
+    public static function processEndPhase(
+        DuelState $duelState,
+        RulesProfile $profile,
+        array $selectedCardInstanceIds,
+    ): DuelState {
+        $stateAfterDiscard = self::discardEndPhaseHandExcess($duelState, $profile, $selectedCardInstanceIds);
+
+        return self::startNextTurn($stateAfterDiscard, $profile);
+    }
+
     public static function getNextStandardPhase(DuelPhase $currentPhase): ?DuelPhase
     {
         $order = PhaseOrder::standard();
