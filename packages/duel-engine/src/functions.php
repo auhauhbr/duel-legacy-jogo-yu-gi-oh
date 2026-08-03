@@ -125,6 +125,12 @@ function getRequiredEndPhaseDiscardCount(DuelState $duelState, RulesProfile $pro
     return Engine::getRequiredEndPhaseDiscardCount($duelState, $profile);
 }
 
+/** @param list<string> $selectedCardInstanceIds */
+function discardEndPhaseHandExcess(DuelState $duelState, RulesProfile $profile, array $selectedCardInstanceIds): DuelState
+{
+    return Engine::discardEndPhaseHandExcess($duelState, $profile, $selectedCardInstanceIds);
+}
+
 function getNextStandardPhase(DuelPhase $currentPhase): ?DuelPhase
 {
     return Engine::getNextStandardPhase($currentPhase);

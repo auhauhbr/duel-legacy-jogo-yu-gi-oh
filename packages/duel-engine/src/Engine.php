@@ -493,6 +493,70 @@ final class Engine
         return max(0, count($player->hand) - (int) $profile->handLimit);
     }
 
+    /** @param list<string> $selectedCardInstanceIds */
+    public static function discardEndPhaseHandExcess(
+        DuelState $duelState,
+        RulesProfile $profile,
+        array $selectedCardInstanceIds,
+    ): DuelState {
+        self::assertValidProfile($profile);
+        self::validateCoreState($duelState, $profile);
+        self::validateActiveState(
+            $duelState,
+            $profile,
+            DuelPhase::END,
+            'Somente um Duelo ACTIVE pode descartar o excesso da mão na Fase Final.',
+            'O Duelo deve estar na fase END.',
+            'A Fase Final deve possuir jogador atual.',
+        );
+
+        $currentPlayerId = $duelState->currentPlayerId;
+        if ($currentPlayerId === null) {
+            throw new DomainException('A Fase Final deve possuir jogador atual.');
+        }
+        $currentPlayer = self::findPlayer($duelState, $currentPlayerId);
+        $requiredCount = self::getRequiredEndPhaseDiscardCount($duelState, $profile);
+        $selectedCount = count($selectedCardInstanceIds);
+        if ($selectedCount !== $requiredCount) {
+            throw new InvalidArgumentException(
+                "A quantidade de cartas selecionadas para descarte deve ser exatamente {$requiredCount}; recebida: {$selectedCount}.",
+            );
+        }
+
+        $validatedSelection = [];
+        foreach ($selectedCardInstanceIds as $selectedCardInstanceId) {
+            if (EcmaScriptString::isBlank($selectedCardInstanceId)) {
+                throw new InvalidArgumentException('IDs selecionados para descarte não podem ser vazios.');
+            }
+            if (in_array($selectedCardInstanceId, $validatedSelection, true)) {
+                throw new InvalidArgumentException('IDs selecionados para descarte devem ser únicos.');
+            }
+            if (! in_array($selectedCardInstanceId, $currentPlayer->hand, true)) {
+                throw new InvalidArgumentException("A carta selecionada não está na mão do jogador atual: {$selectedCardInstanceId}.");
+            }
+            $validatedSelection[] = $selectedCardInstanceId;
+        }
+
+        $remainingHand = [];
+        $discardedCards = [];
+        foreach ($currentPlayer->hand as $cardInstanceId) {
+            if (in_array($cardInstanceId, $validatedSelection, true)) {
+                $discardedCards[] = $cardInstanceId;
+            } else {
+                $remainingHand[] = $cardInstanceId;
+            }
+        }
+
+        $players = array_map(self::clonePlayer(...), $duelState->players);
+        $currentPlayerIndex = self::findPlayerIndex($players, $currentPlayerId);
+        $players[$currentPlayerIndex] = $players[$currentPlayerIndex]->with([
+            'hand' => [...$remainingHand],
+            'graveyard' => [...$currentPlayer->graveyard, ...$discardedCards],
+        ]);
+
+        return self::copyState($duelState, ['players' => $players]);
+    }
+
     public static function getNextStandardPhase(DuelPhase $currentPhase): ?DuelPhase
     {
         $order = PhaseOrder::standard();
