@@ -1,7 +1,14 @@
 node_modules/
+.pnpm-store/
+vendor/
+**/vendor/
 dist/
 coverage/
 *.tsbuildinfo
+.phpunit.cache/
+**/.phpunit.cache/
+.phpstan.cache/
+**/.phpstan.cache/
 
 .env
 .env.*
@@ -11,3 +18,19 @@ coverage/
 Thumbs.db
 *.log
 .vite/
+apps/api/bootstrap/cache/*.php
+apps/api/storage/framework/cache/*
+apps/api/storage/framework/views/*
+apps/api/storage/logs/*
+apps/api/storage/framework/sessions/
+apps/api/storage/framework/testing/
+storage/framework/
+storage/logs/
+auth.json
+**/auth.json
+storage/oauth-*.key
+apps/api/storage/oauth-*.key
+*.tmp
+*.temp
+*.swp
+*~
