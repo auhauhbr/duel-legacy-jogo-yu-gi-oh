@@ -1,0 +1,1789 @@
+{
+  "schemaVersion": 1,
+  "source": "TypeScript duel-engine 0.0.0",
+  "utf16HashContract": true,
+  "rng": [
+    {
+      "seed": "ascii",
+      "initialState": {
+        "seed": "ascii",
+        "state": 4153456996,
+        "calls": 0
+      },
+      "uint32": [
+        4147474042, 96101351, 1897023364, 96056789, 1398965972, 1958274568,
+        1732482228, 2943800734
+      ],
+      "uint32FinalState": {
+        "seed": "ascii",
+        "state": 2943800734,
+        "calls": 8
+      },
+      "floats": [
+        0.9656590507365763, 0.022375339409336448, 0.441685170866549,
+        0.022364964010193944, 0.32572214771062136
+      ],
+      "floatFinalState": {
+        "seed": "ascii",
+        "state": 1398965972,
+        "calls": 5
+      },
+      "integers": [
+        {
+          "minInclusive": 0,
+          "maxExclusive": 10,
+          "value": 9
+        },
+        {
+          "minInclusive": -10,
+          "maxExclusive": -2,
+          "value": -10
+        },
+        {
+          "minInclusive": 10,
+          "maxExclusive": 1000,
+          "value": 447
+        },
+        {
+          "minInclusive": -2000000000,
+          "maxExclusive": 2000000000,
+          "value": -1910540144
+        },
+        {
+          "minInclusive": 0,
+          "maxExclusive": 4294967296,
+          "value": 1398965972
+        }
+      ],
+      "intFinalState": {
+        "seed": "ascii",
+        "state": 1398965972,
+        "calls": 5
+      },
+      "shuffle": {
+        "items": ["G", "H", "E", "F", "C", "B", "I", "D", "A", "J"],
+        "nextState": {
+          "seed": "ascii",
+          "state": 3445670140,
+          "calls": 9
+        }
+      }
+    },
+    {
+      "seed": "GX 2026",
+      "initialState": {
+        "seed": "GX 2026",
+        "state": 2902471708,
+        "calls": 0
+      },
+      "uint32": [
+        3690977917, 918367877, 4275380563, 85125548, 1557131871, 4060881085,
+        3043806640, 3078725757
+      ],
+      "uint32FinalState": {
+        "seed": "GX 2026",
+        "state": 3078725757,
+        "calls": 8
+      },
+      "floats": [
+        0.859372764127329, 0.21382418391294777, 0.9954396083485335,
+        0.019819836132228374, 0.3625480157788843
+      ],
+      "floatFinalState": {
+        "seed": "GX 2026",
+        "state": 1557131871,
+        "calls": 5
+      },
+      "integers": [
+        {
+          "minInclusive": 0,
+          "maxExclusive": 10,
+          "value": 8
+        },
+        {
+          "minInclusive": -10,
+          "maxExclusive": -2,
+          "value": -9
+        },
+        {
+          "minInclusive": 10,
+          "maxExclusive": 1000,
+          "value": 995
+        },
+        {
+          "minInclusive": -2000000000,
+          "maxExclusive": 2000000000,
+          "value": -1920720656
+        },
+        {
+          "minInclusive": 0,
+          "maxExclusive": 4294967296,
+          "value": 1557131871
+        }
+      ],
+      "intFinalState": {
+        "seed": "GX 2026",
+        "state": 1557131871,
+        "calls": 5
+      },
+      "shuffle": {
+        "items": ["G", "J", "D", "F", "E", "C", "A", "H", "B", "I"],
+        "nextState": {
+          "seed": "GX 2026",
+          "state": 4064704250,
+          "calls": 9
+        }
+      }
+    },
+    {
+      "seed": "  espaços preservados  ",
+      "initialState": {
+        "seed": "  espaços preservados  ",
+        "state": 1766042557,
+        "calls": 0
+      },
+      "uint32": [
+        2595533127, 2669065769, 1940253376, 290208382, 1450548895, 1365738956,
+        2585063747, 2209282301
+      ],
+      "uint32FinalState": {
+        "seed": "  espaços preservados  ",
+        "state": 2209282301,
+        "calls": 8
+      },
+      "floats": [
+        0.6043196485843509, 0.6214403009507805, 0.4517504423856735,
+        0.06756940437480807, 0.33773223287425935
+      ],
+      "floatFinalState": {
+        "seed": "  espaços preservados  ",
+        "state": 1450548895,
+        "calls": 5
+      },
+      "integers": [
+        {
+          "minInclusive": 0,
+          "maxExclusive": 10,
+          "value": 6
+        },
+        {
+          "minInclusive": -10,
+          "maxExclusive": -2,
+          "value": -6
+        },
+        {
+          "minInclusive": 10,
+          "maxExclusive": 1000,
+          "value": 457
+        },
+        {
+          "minInclusive": -2000000000,
+          "maxExclusive": 2000000000,
+          "value": -1729722383
+        },
+        {
+          "minInclusive": 0,
+          "maxExclusive": 4294967296,
+          "value": 1450548895
+        }
+      ],
+      "intFinalState": {
+        "seed": "  espaços preservados  ",
+        "state": 1450548895,
+        "calls": 5
+      },
+      "shuffle": {
+        "items": ["J", "H", "E", "I", "B", "C", "A", "D", "F", "G"],
+        "nextState": {
+          "seed": "  espaços preservados  ",
+          "state": 3399459333,
+          "calls": 9
+        }
+      }
+    },
+    {
+      "seed": "ação-coração",
+      "initialState": {
+        "seed": "ação-coração",
+        "state": 878916014,
+        "calls": 0
+      },
+      "uint32": [
+        411944997, 2427331777, 3539203482, 610047226, 1857191163, 76317133,
+        35133815, 669631596
+      ],
+      "uint32FinalState": {
+        "seed": "ação-coração",
+        "state": 669631596,
+        "calls": 8
+      },
+      "floats": [
+        0.0959134188015014, 0.5651572200004011, 0.8240350247360766,
+        0.14203768828883767, 0.4324110138695687
+      ],
+      "floatFinalState": {
+        "seed": "ação-coração",
+        "state": 1857191163,
+        "calls": 5
+      },
+      "integers": [
+        {
+          "minInclusive": 0,
+          "maxExclusive": 10,
+          "value": 0
+        },
+        {
+          "minInclusive": -10,
+          "maxExclusive": -2,
+          "value": -6
+        },
+        {
+          "minInclusive": 10,
+          "maxExclusive": 1000,
+          "value": 825
+        },
+        {
+          "minInclusive": -2000000000,
+          "maxExclusive": 2000000000,
+          "value": -1431849247
+        },
+        {
+          "minInclusive": 0,
+          "maxExclusive": 4294967296,
+          "value": 1857191163
+        }
+      ],
+      "intFinalState": {
+        "seed": "ação-coração",
+        "state": 1857191163,
+        "calls": 5
+      },
+      "shuffle": {
+        "items": ["I", "B", "D", "E", "H", "C", "J", "G", "F", "A"],
+        "nextState": {
+          "seed": "ação-coração",
+          "state": 4092407838,
+          "calls": 9
+        }
+      }
+    },
+    {
+      "seed": "🔥",
+      "initialState": {
+        "seed": "🔥",
+        "state": 3064270134,
+        "calls": 0
+      },
+      "uint32": [
+        4152037463, 994502415, 323612508, 4209867181, 4005993313, 2298352436,
+        428767608, 42161960
+      ],
+      "uint32FinalState": {
+        "seed": "🔥",
+        "state": 42161960,
+        "calls": 8
+      },
+      "floats": [
+        0.9667215549852699, 0.23155063739977777, 0.07534690853208303,
+        0.9801860854495317, 0.9327180015388876
+      ],
+      "floatFinalState": {
+        "seed": "🔥",
+        "state": 4005993313,
+        "calls": 5
+      },
+      "integers": [
+        {
+          "minInclusive": 0,
+          "maxExclusive": 10,
+          "value": 9
+        },
+        {
+          "minInclusive": -10,
+          "maxExclusive": -2,
+          "value": -9
+        },
+        {
+          "minInclusive": 10,
+          "maxExclusive": 1000,
+          "value": 84
+        },
+        {
+          "minInclusive": -2000000000,
+          "maxExclusive": 2000000000,
+          "value": 1920744341
+        },
+        {
+          "minInclusive": 0,
+          "maxExclusive": 4294967296,
+          "value": 4005993313
+        }
+      ],
+      "intFinalState": {
+        "seed": "🔥",
+        "state": 4005993313,
+        "calls": 5
+      },
+      "shuffle": {
+        "items": ["B", "E", "D", "H", "I", "F", "G", "A", "C", "J"],
+        "nextState": {
+          "seed": "🔥",
+          "state": 1688862843,
+          "calls": 9
+        }
+      }
+    },
+    {
+      "seed": "duelo 🃏 GX",
+      "initialState": {
+        "seed": "duelo 🃏 GX",
+        "state": 1182160298,
+        "calls": 0
+      },
+      "uint32": [
+        346630827, 242620661, 1618155105, 1431949566, 2273496317, 498957715,
+        4092057108, 764346950
+      ],
+      "uint32FinalState": {
+        "seed": "duelo 🃏 GX",
+        "state": 764346950,
+        "calls": 8
+      },
+      "floats": [
+        0.08070627856068313, 0.056489524664357305, 0.376756094628945,
+        0.33340173913165927, 0.529339610831812
+      ],
+      "floatFinalState": {
+        "seed": "duelo 🃏 GX",
+        "state": 2273496317,
+        "calls": 5
+      },
+      "integers": [
+        {
+          "minInclusive": 0,
+          "maxExclusive": 10,
+          "value": 0
+        },
+        {
+          "minInclusive": -10,
+          "maxExclusive": -2,
+          "value": -10
+        },
+        {
+          "minInclusive": 10,
+          "maxExclusive": 1000,
+          "value": 382
+        },
+        {
+          "minInclusive": -2000000000,
+          "maxExclusive": 2000000000,
+          "value": -666393044
+        },
+        {
+          "minInclusive": 0,
+          "maxExclusive": 4294967296,
+          "value": 2273496317
+        }
+      ],
+      "intFinalState": {
+        "seed": "duelo 🃏 GX",
+        "state": 2273496317,
+        "calls": 5
+      },
+      "shuffle": {
+        "items": ["B", "G", "E", "F", "I", "H", "C", "D", "J", "A"],
+        "nextState": {
+          "seed": "duelo 🃏 GX",
+          "state": 1966288901,
+          "calls": 9
+        }
+      }
+    },
+    {
+      "seed": "\u00a0seed válida\ufeff",
+      "initialState": {
+        "seed": "\u00a0seed válida\ufeff",
+        "state": 691734712,
+        "calls": 0
+      },
+      "uint32": [
+        1302968686, 705479084, 4112125616, 759614998, 1678442196, 1104938172,
+        3895945017, 2665017201
+      ],
+      "uint32FinalState": {
+        "seed": "\u00a0seed válida\ufeff",
+        "state": 2665017201,
+        "calls": 8
+      },
+      "floats": [
+        0.30337103782221675, 0.16425714921206236, 0.9574288539588451,
+        0.1768616489134729, 0.3907927768304944
+      ],
+      "floatFinalState": {
+        "seed": "\u00a0seed válida\ufeff",
+        "state": 1678442196,
+        "calls": 5
+      },
+      "integers": [
+        { "minInclusive": 0, "maxExclusive": 10, "value": 3 },
+        { "minInclusive": -10, "maxExclusive": -2, "value": -9 },
+        { "minInclusive": 10, "maxExclusive": 1000, "value": 957 },
+        {
+          "minInclusive": -2000000000,
+          "maxExclusive": 2000000000,
+          "value": -1292553405
+        },
+        {
+          "minInclusive": 0,
+          "maxExclusive": 4294967296,
+          "value": 1678442196
+        }
+      ],
+      "intFinalState": {
+        "seed": "\u00a0seed válida\ufeff",
+        "state": 1678442196,
+        "calls": 5
+      },
+      "shuffle": {
+        "items": ["A", "F", "E", "J", "G", "C", "I", "H", "B", "D"],
+        "nextState": {
+          "seed": "\u00a0seed válida\ufeff",
+          "state": 3857142698,
+          "calls": 9
+        }
+      }
+    },
+    {
+      "seed": "\u24cc\uc431",
+      "initialState": {
+        "seed": "\u24cc\uc431",
+        "state": 2654435769,
+        "calls": 0
+      },
+      "uint32": [
+        1359758873, 3761132862, 2075758394, 25405621, 3862129951, 4186559031,
+        3122997712, 4244368831
+      ],
+      "uint32FinalState": {
+        "seed": "\u24cc\uc431",
+        "state": 4244368831,
+        "calls": 8
+      },
+      "floats": [
+        0.31659353361465037, 0.8757069851271808, 0.4833001629449427,
+        0.005915207089856267, 0.899222202366218
+      ],
+      "floatFinalState": {
+        "seed": "\u24cc\uc431",
+        "state": 3862129951,
+        "calls": 5
+      },
+      "integers": [
+        { "minInclusive": 0, "maxExclusive": 10, "value": 3 },
+        { "minInclusive": -10, "maxExclusive": -2, "value": -3 },
+        { "minInclusive": 10, "maxExclusive": 1000, "value": 488 },
+        {
+          "minInclusive": -2000000000,
+          "maxExclusive": 2000000000,
+          "value": -1976339172
+        },
+        {
+          "minInclusive": 0,
+          "maxExclusive": 4294967296,
+          "value": 3862129951
+        }
+      ],
+      "intFinalState": {
+        "seed": "\u24cc\uc431",
+        "state": 3862129951,
+        "calls": 5
+      },
+      "shuffle": {
+        "items": ["G", "B", "I", "C", "E", "F", "A", "J", "H", "D"],
+        "nextState": {
+          "seed": "\u24cc\uc431",
+          "state": 2831543865,
+          "calls": 9
+        }
+      }
+    }
+  ],
+  "invalidSeeds": [
+    {
+      "seed": "",
+      "accepted": false,
+      "message": "A seed não pode ser vazia."
+    },
+    {
+      "seed": " ",
+      "accepted": false,
+      "message": "A seed não pode ser vazia."
+    },
+    {
+      "seed": "   ",
+      "accepted": false,
+      "message": "A seed não pode ser vazia."
+    },
+    {
+      "seed": "\t\n",
+      "accepted": false,
+      "message": "A seed não pode ser vazia."
+    },
+    {
+      "seed": "\u00a0",
+      "accepted": false,
+      "message": "A seed não pode ser vazia."
+    },
+    {
+      "seed": "\u2003",
+      "accepted": false,
+      "message": "A seed não pode ser vazia."
+    },
+    {
+      "seed": "\ufeff",
+      "accepted": false,
+      "message": "A seed não pode ser vazia."
+    },
+    {
+      "seed": "\u00a0\u2003\ufeff",
+      "accepted": false,
+      "message": "A seed não pode ser vazia."
+    },
+    {
+      "seed": "\u00a0\u2003 \ufeff",
+      "accepted": false,
+      "message": "A seed não pode ser vazia."
+    }
+  ],
+  "trimValidation": [
+    { "value": "\u00a0", "trimmedEmpty": true },
+    { "value": "\u2003", "trimmedEmpty": true },
+    { "value": "\ufeff", "trimmedEmpty": true },
+    { "value": "\u00a0\u2003\ufeff", "trimmedEmpty": true },
+    { "value": "\u00a0\u2003 \ufeff", "trimmedEmpty": true },
+    { "value": "\u00a0seed válida\ufeff", "trimmedEmpty": false }
+  ],
+  "flow": {
+    "initial": {
+      "duelId": "duel-reference",
+      "rulesProfileId": "GX_LEGACY",
+      "engineVersion": "engine-reference",
+      "cardPoolVersion": "pool-reference",
+      "players": [
+        {
+          "playerId": "player-1",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-1-main-1",
+            "player-1-main-2",
+            "player-1-main-3",
+            "player-1-main-4",
+            "player-1-main-5",
+            "player-1-main-6",
+            "player-1-main-7",
+            "player-1-main-8",
+            "player-1-main-9",
+            "player-1-main-10",
+            "player-1-main-11",
+            "player-1-main-12",
+            "player-1-main-13",
+            "player-1-main-14",
+            "player-1-main-15",
+            "player-1-main-16",
+            "player-1-main-17",
+            "player-1-main-18",
+            "player-1-main-19",
+            "player-1-main-20",
+            "player-1-main-21",
+            "player-1-main-22",
+            "player-1-main-23",
+            "player-1-main-24",
+            "player-1-main-25",
+            "player-1-main-26",
+            "player-1-main-27",
+            "player-1-main-28",
+            "player-1-main-29",
+            "player-1-main-30",
+            "player-1-main-31",
+            "player-1-main-32",
+            "player-1-main-33",
+            "player-1-main-34",
+            "player-1-main-35",
+            "player-1-main-36",
+            "player-1-main-37",
+            "player-1-main-38",
+            "player-1-main-39",
+            "player-1-main-40"
+          ],
+          "hand": [],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-1-extra-1", "player-1-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        },
+        {
+          "playerId": "player-2",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-2-main-1",
+            "player-2-main-2",
+            "player-2-main-3",
+            "player-2-main-4",
+            "player-2-main-5",
+            "player-2-main-6",
+            "player-2-main-7",
+            "player-2-main-8",
+            "player-2-main-9",
+            "player-2-main-10",
+            "player-2-main-11",
+            "player-2-main-12",
+            "player-2-main-13",
+            "player-2-main-14",
+            "player-2-main-15",
+            "player-2-main-16",
+            "player-2-main-17",
+            "player-2-main-18",
+            "player-2-main-19",
+            "player-2-main-20",
+            "player-2-main-21",
+            "player-2-main-22",
+            "player-2-main-23",
+            "player-2-main-24",
+            "player-2-main-25",
+            "player-2-main-26",
+            "player-2-main-27",
+            "player-2-main-28",
+            "player-2-main-29",
+            "player-2-main-30",
+            "player-2-main-31",
+            "player-2-main-32",
+            "player-2-main-33",
+            "player-2-main-34",
+            "player-2-main-35",
+            "player-2-main-36",
+            "player-2-main-37",
+            "player-2-main-38",
+            "player-2-main-39",
+            "player-2-main-40"
+          ],
+          "hand": [],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-2-extra-1", "player-2-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        }
+      ],
+      "turnOrder": ["player-2", "player-1"],
+      "rngState": null,
+      "status": "PREPARING",
+      "turnNumber": 0,
+      "currentPlayerId": null,
+      "phase": null,
+      "winnerId": null,
+      "resultReason": null
+    },
+    "prepared": {
+      "duelId": "duel-reference",
+      "rulesProfileId": "GX_LEGACY",
+      "engineVersion": "engine-reference",
+      "cardPoolVersion": "pool-reference",
+      "players": [
+        {
+          "playerId": "player-1",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-1-main-25",
+            "player-1-main-12",
+            "player-1-main-36",
+            "player-1-main-7",
+            "player-1-main-4",
+            "player-1-main-38",
+            "player-1-main-27",
+            "player-1-main-13",
+            "player-1-main-34",
+            "player-1-main-11",
+            "player-1-main-19",
+            "player-1-main-40",
+            "player-1-main-15",
+            "player-1-main-9",
+            "player-1-main-14",
+            "player-1-main-26",
+            "player-1-main-17",
+            "player-1-main-3",
+            "player-1-main-39",
+            "player-1-main-18",
+            "player-1-main-29",
+            "player-1-main-30",
+            "player-1-main-2",
+            "player-1-main-35",
+            "player-1-main-37",
+            "player-1-main-20",
+            "player-1-main-23",
+            "player-1-main-21",
+            "player-1-main-6",
+            "player-1-main-1",
+            "player-1-main-8",
+            "player-1-main-24",
+            "player-1-main-5",
+            "player-1-main-10",
+            "player-1-main-28"
+          ],
+          "hand": [
+            "player-1-main-32",
+            "player-1-main-22",
+            "player-1-main-16",
+            "player-1-main-31",
+            "player-1-main-33"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-1-extra-1", "player-1-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        },
+        {
+          "playerId": "player-2",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-2-main-37",
+            "player-2-main-29",
+            "player-2-main-23",
+            "player-2-main-11",
+            "player-2-main-39",
+            "player-2-main-38",
+            "player-2-main-14",
+            "player-2-main-15",
+            "player-2-main-36",
+            "player-2-main-31",
+            "player-2-main-1",
+            "player-2-main-2",
+            "player-2-main-33",
+            "player-2-main-22",
+            "player-2-main-3",
+            "player-2-main-6",
+            "player-2-main-18",
+            "player-2-main-32",
+            "player-2-main-12",
+            "player-2-main-20",
+            "player-2-main-34",
+            "player-2-main-8",
+            "player-2-main-10",
+            "player-2-main-16",
+            "player-2-main-26",
+            "player-2-main-17",
+            "player-2-main-35",
+            "player-2-main-30",
+            "player-2-main-40",
+            "player-2-main-19",
+            "player-2-main-25",
+            "player-2-main-21",
+            "player-2-main-5",
+            "player-2-main-9",
+            "player-2-main-24"
+          ],
+          "hand": [
+            "player-2-main-4",
+            "player-2-main-13",
+            "player-2-main-28",
+            "player-2-main-27",
+            "player-2-main-7"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-2-extra-1", "player-2-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        }
+      ],
+      "turnOrder": ["player-2", "player-1"],
+      "rngState": {
+        "seed": "paridade GX 🔥",
+        "state": 3939097689,
+        "calls": 78
+      },
+      "status": "PREPARING",
+      "turnNumber": 0,
+      "currentPlayerId": null,
+      "phase": null,
+      "winnerId": null,
+      "resultReason": null
+    },
+    "firstTurn": {
+      "duelId": "duel-reference",
+      "rulesProfileId": "GX_LEGACY",
+      "engineVersion": "engine-reference",
+      "cardPoolVersion": "pool-reference",
+      "players": [
+        {
+          "playerId": "player-1",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-1-main-25",
+            "player-1-main-12",
+            "player-1-main-36",
+            "player-1-main-7",
+            "player-1-main-4",
+            "player-1-main-38",
+            "player-1-main-27",
+            "player-1-main-13",
+            "player-1-main-34",
+            "player-1-main-11",
+            "player-1-main-19",
+            "player-1-main-40",
+            "player-1-main-15",
+            "player-1-main-9",
+            "player-1-main-14",
+            "player-1-main-26",
+            "player-1-main-17",
+            "player-1-main-3",
+            "player-1-main-39",
+            "player-1-main-18",
+            "player-1-main-29",
+            "player-1-main-30",
+            "player-1-main-2",
+            "player-1-main-35",
+            "player-1-main-37",
+            "player-1-main-20",
+            "player-1-main-23",
+            "player-1-main-21",
+            "player-1-main-6",
+            "player-1-main-1",
+            "player-1-main-8",
+            "player-1-main-24",
+            "player-1-main-5",
+            "player-1-main-10",
+            "player-1-main-28"
+          ],
+          "hand": [
+            "player-1-main-32",
+            "player-1-main-22",
+            "player-1-main-16",
+            "player-1-main-31",
+            "player-1-main-33"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-1-extra-1", "player-1-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        },
+        {
+          "playerId": "player-2",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-2-main-37",
+            "player-2-main-29",
+            "player-2-main-23",
+            "player-2-main-11",
+            "player-2-main-39",
+            "player-2-main-38",
+            "player-2-main-14",
+            "player-2-main-15",
+            "player-2-main-36",
+            "player-2-main-31",
+            "player-2-main-1",
+            "player-2-main-2",
+            "player-2-main-33",
+            "player-2-main-22",
+            "player-2-main-3",
+            "player-2-main-6",
+            "player-2-main-18",
+            "player-2-main-32",
+            "player-2-main-12",
+            "player-2-main-20",
+            "player-2-main-34",
+            "player-2-main-8",
+            "player-2-main-10",
+            "player-2-main-16",
+            "player-2-main-26",
+            "player-2-main-17",
+            "player-2-main-35",
+            "player-2-main-30",
+            "player-2-main-40",
+            "player-2-main-19",
+            "player-2-main-25",
+            "player-2-main-21",
+            "player-2-main-5",
+            "player-2-main-9",
+            "player-2-main-24"
+          ],
+          "hand": [
+            "player-2-main-4",
+            "player-2-main-13",
+            "player-2-main-28",
+            "player-2-main-27",
+            "player-2-main-7"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-2-extra-1", "player-2-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        }
+      ],
+      "turnOrder": ["player-2", "player-1"],
+      "rngState": {
+        "seed": "paridade GX 🔥",
+        "state": 3939097689,
+        "calls": 78
+      },
+      "status": "ACTIVE",
+      "turnNumber": 1,
+      "currentPlayerId": "player-2",
+      "phase": "DRAW",
+      "winnerId": null,
+      "resultReason": null
+    },
+    "afterFirstDraw": {
+      "duelId": "duel-reference",
+      "rulesProfileId": "GX_LEGACY",
+      "engineVersion": "engine-reference",
+      "cardPoolVersion": "pool-reference",
+      "players": [
+        {
+          "playerId": "player-1",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-1-main-25",
+            "player-1-main-12",
+            "player-1-main-36",
+            "player-1-main-7",
+            "player-1-main-4",
+            "player-1-main-38",
+            "player-1-main-27",
+            "player-1-main-13",
+            "player-1-main-34",
+            "player-1-main-11",
+            "player-1-main-19",
+            "player-1-main-40",
+            "player-1-main-15",
+            "player-1-main-9",
+            "player-1-main-14",
+            "player-1-main-26",
+            "player-1-main-17",
+            "player-1-main-3",
+            "player-1-main-39",
+            "player-1-main-18",
+            "player-1-main-29",
+            "player-1-main-30",
+            "player-1-main-2",
+            "player-1-main-35",
+            "player-1-main-37",
+            "player-1-main-20",
+            "player-1-main-23",
+            "player-1-main-21",
+            "player-1-main-6",
+            "player-1-main-1",
+            "player-1-main-8",
+            "player-1-main-24",
+            "player-1-main-5",
+            "player-1-main-10",
+            "player-1-main-28"
+          ],
+          "hand": [
+            "player-1-main-32",
+            "player-1-main-22",
+            "player-1-main-16",
+            "player-1-main-31",
+            "player-1-main-33"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-1-extra-1", "player-1-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        },
+        {
+          "playerId": "player-2",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-2-main-37",
+            "player-2-main-29",
+            "player-2-main-23",
+            "player-2-main-11",
+            "player-2-main-39",
+            "player-2-main-38",
+            "player-2-main-14",
+            "player-2-main-15",
+            "player-2-main-36",
+            "player-2-main-31",
+            "player-2-main-1",
+            "player-2-main-2",
+            "player-2-main-33",
+            "player-2-main-22",
+            "player-2-main-3",
+            "player-2-main-6",
+            "player-2-main-18",
+            "player-2-main-32",
+            "player-2-main-12",
+            "player-2-main-20",
+            "player-2-main-34",
+            "player-2-main-8",
+            "player-2-main-10",
+            "player-2-main-16",
+            "player-2-main-26",
+            "player-2-main-17",
+            "player-2-main-35",
+            "player-2-main-30",
+            "player-2-main-40",
+            "player-2-main-19",
+            "player-2-main-25",
+            "player-2-main-21",
+            "player-2-main-5",
+            "player-2-main-9",
+            "player-2-main-24"
+          ],
+          "hand": [
+            "player-2-main-4",
+            "player-2-main-13",
+            "player-2-main-28",
+            "player-2-main-27",
+            "player-2-main-7"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-2-extra-1", "player-2-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        }
+      ],
+      "turnOrder": ["player-2", "player-1"],
+      "rngState": {
+        "seed": "paridade GX 🔥",
+        "state": 3939097689,
+        "calls": 78
+      },
+      "status": "ACTIVE",
+      "turnNumber": 1,
+      "currentPlayerId": "player-2",
+      "phase": "STANDBY",
+      "winnerId": null,
+      "resultReason": null
+    },
+    "firstMain": {
+      "duelId": "duel-reference",
+      "rulesProfileId": "GX_LEGACY",
+      "engineVersion": "engine-reference",
+      "cardPoolVersion": "pool-reference",
+      "players": [
+        {
+          "playerId": "player-1",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-1-main-25",
+            "player-1-main-12",
+            "player-1-main-36",
+            "player-1-main-7",
+            "player-1-main-4",
+            "player-1-main-38",
+            "player-1-main-27",
+            "player-1-main-13",
+            "player-1-main-34",
+            "player-1-main-11",
+            "player-1-main-19",
+            "player-1-main-40",
+            "player-1-main-15",
+            "player-1-main-9",
+            "player-1-main-14",
+            "player-1-main-26",
+            "player-1-main-17",
+            "player-1-main-3",
+            "player-1-main-39",
+            "player-1-main-18",
+            "player-1-main-29",
+            "player-1-main-30",
+            "player-1-main-2",
+            "player-1-main-35",
+            "player-1-main-37",
+            "player-1-main-20",
+            "player-1-main-23",
+            "player-1-main-21",
+            "player-1-main-6",
+            "player-1-main-1",
+            "player-1-main-8",
+            "player-1-main-24",
+            "player-1-main-5",
+            "player-1-main-10",
+            "player-1-main-28"
+          ],
+          "hand": [
+            "player-1-main-32",
+            "player-1-main-22",
+            "player-1-main-16",
+            "player-1-main-31",
+            "player-1-main-33"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-1-extra-1", "player-1-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        },
+        {
+          "playerId": "player-2",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-2-main-37",
+            "player-2-main-29",
+            "player-2-main-23",
+            "player-2-main-11",
+            "player-2-main-39",
+            "player-2-main-38",
+            "player-2-main-14",
+            "player-2-main-15",
+            "player-2-main-36",
+            "player-2-main-31",
+            "player-2-main-1",
+            "player-2-main-2",
+            "player-2-main-33",
+            "player-2-main-22",
+            "player-2-main-3",
+            "player-2-main-6",
+            "player-2-main-18",
+            "player-2-main-32",
+            "player-2-main-12",
+            "player-2-main-20",
+            "player-2-main-34",
+            "player-2-main-8",
+            "player-2-main-10",
+            "player-2-main-16",
+            "player-2-main-26",
+            "player-2-main-17",
+            "player-2-main-35",
+            "player-2-main-30",
+            "player-2-main-40",
+            "player-2-main-19",
+            "player-2-main-25",
+            "player-2-main-21",
+            "player-2-main-5",
+            "player-2-main-9",
+            "player-2-main-24"
+          ],
+          "hand": [
+            "player-2-main-4",
+            "player-2-main-13",
+            "player-2-main-28",
+            "player-2-main-27",
+            "player-2-main-7"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-2-extra-1", "player-2-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        }
+      ],
+      "turnOrder": ["player-2", "player-1"],
+      "rngState": {
+        "seed": "paridade GX 🔥",
+        "state": 3939097689,
+        "calls": 78
+      },
+      "status": "ACTIVE",
+      "turnNumber": 1,
+      "currentPlayerId": "player-2",
+      "phase": "MAIN_1",
+      "winnerId": null,
+      "resultReason": null
+    },
+    "firstLegalTransitions": ["END"],
+    "firstEnd": {
+      "duelId": "duel-reference",
+      "rulesProfileId": "GX_LEGACY",
+      "engineVersion": "engine-reference",
+      "cardPoolVersion": "pool-reference",
+      "players": [
+        {
+          "playerId": "player-1",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-1-main-25",
+            "player-1-main-12",
+            "player-1-main-36",
+            "player-1-main-7",
+            "player-1-main-4",
+            "player-1-main-38",
+            "player-1-main-27",
+            "player-1-main-13",
+            "player-1-main-34",
+            "player-1-main-11",
+            "player-1-main-19",
+            "player-1-main-40",
+            "player-1-main-15",
+            "player-1-main-9",
+            "player-1-main-14",
+            "player-1-main-26",
+            "player-1-main-17",
+            "player-1-main-3",
+            "player-1-main-39",
+            "player-1-main-18",
+            "player-1-main-29",
+            "player-1-main-30",
+            "player-1-main-2",
+            "player-1-main-35",
+            "player-1-main-37",
+            "player-1-main-20",
+            "player-1-main-23",
+            "player-1-main-21",
+            "player-1-main-6",
+            "player-1-main-1",
+            "player-1-main-8",
+            "player-1-main-24",
+            "player-1-main-5",
+            "player-1-main-10",
+            "player-1-main-28"
+          ],
+          "hand": [
+            "player-1-main-32",
+            "player-1-main-22",
+            "player-1-main-16",
+            "player-1-main-31",
+            "player-1-main-33"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-1-extra-1", "player-1-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        },
+        {
+          "playerId": "player-2",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-2-main-37",
+            "player-2-main-29",
+            "player-2-main-23",
+            "player-2-main-11",
+            "player-2-main-39",
+            "player-2-main-38",
+            "player-2-main-14",
+            "player-2-main-15",
+            "player-2-main-36",
+            "player-2-main-31",
+            "player-2-main-1",
+            "player-2-main-2",
+            "player-2-main-33",
+            "player-2-main-22",
+            "player-2-main-3",
+            "player-2-main-6",
+            "player-2-main-18",
+            "player-2-main-32",
+            "player-2-main-12",
+            "player-2-main-20",
+            "player-2-main-34",
+            "player-2-main-8",
+            "player-2-main-10",
+            "player-2-main-16",
+            "player-2-main-26",
+            "player-2-main-17",
+            "player-2-main-35",
+            "player-2-main-30",
+            "player-2-main-40",
+            "player-2-main-19",
+            "player-2-main-25",
+            "player-2-main-21",
+            "player-2-main-5",
+            "player-2-main-9",
+            "player-2-main-24"
+          ],
+          "hand": [
+            "player-2-main-4",
+            "player-2-main-13",
+            "player-2-main-28",
+            "player-2-main-27",
+            "player-2-main-7"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-2-extra-1", "player-2-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        }
+      ],
+      "turnOrder": ["player-2", "player-1"],
+      "rngState": {
+        "seed": "paridade GX 🔥",
+        "state": 3939097689,
+        "calls": 78
+      },
+      "status": "ACTIVE",
+      "turnNumber": 1,
+      "currentPlayerId": "player-2",
+      "phase": "END",
+      "winnerId": null,
+      "resultReason": null
+    },
+    "firstDiscardCount": 0,
+    "secondTurn": {
+      "duelId": "duel-reference",
+      "rulesProfileId": "GX_LEGACY",
+      "engineVersion": "engine-reference",
+      "cardPoolVersion": "pool-reference",
+      "players": [
+        {
+          "playerId": "player-1",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-1-main-25",
+            "player-1-main-12",
+            "player-1-main-36",
+            "player-1-main-7",
+            "player-1-main-4",
+            "player-1-main-38",
+            "player-1-main-27",
+            "player-1-main-13",
+            "player-1-main-34",
+            "player-1-main-11",
+            "player-1-main-19",
+            "player-1-main-40",
+            "player-1-main-15",
+            "player-1-main-9",
+            "player-1-main-14",
+            "player-1-main-26",
+            "player-1-main-17",
+            "player-1-main-3",
+            "player-1-main-39",
+            "player-1-main-18",
+            "player-1-main-29",
+            "player-1-main-30",
+            "player-1-main-2",
+            "player-1-main-35",
+            "player-1-main-37",
+            "player-1-main-20",
+            "player-1-main-23",
+            "player-1-main-21",
+            "player-1-main-6",
+            "player-1-main-1",
+            "player-1-main-8",
+            "player-1-main-24",
+            "player-1-main-5",
+            "player-1-main-10",
+            "player-1-main-28"
+          ],
+          "hand": [
+            "player-1-main-32",
+            "player-1-main-22",
+            "player-1-main-16",
+            "player-1-main-31",
+            "player-1-main-33"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-1-extra-1", "player-1-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        },
+        {
+          "playerId": "player-2",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-2-main-37",
+            "player-2-main-29",
+            "player-2-main-23",
+            "player-2-main-11",
+            "player-2-main-39",
+            "player-2-main-38",
+            "player-2-main-14",
+            "player-2-main-15",
+            "player-2-main-36",
+            "player-2-main-31",
+            "player-2-main-1",
+            "player-2-main-2",
+            "player-2-main-33",
+            "player-2-main-22",
+            "player-2-main-3",
+            "player-2-main-6",
+            "player-2-main-18",
+            "player-2-main-32",
+            "player-2-main-12",
+            "player-2-main-20",
+            "player-2-main-34",
+            "player-2-main-8",
+            "player-2-main-10",
+            "player-2-main-16",
+            "player-2-main-26",
+            "player-2-main-17",
+            "player-2-main-35",
+            "player-2-main-30",
+            "player-2-main-40",
+            "player-2-main-19",
+            "player-2-main-25",
+            "player-2-main-21",
+            "player-2-main-5",
+            "player-2-main-9",
+            "player-2-main-24"
+          ],
+          "hand": [
+            "player-2-main-4",
+            "player-2-main-13",
+            "player-2-main-28",
+            "player-2-main-27",
+            "player-2-main-7"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-2-extra-1", "player-2-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        }
+      ],
+      "turnOrder": ["player-2", "player-1"],
+      "rngState": {
+        "seed": "paridade GX 🔥",
+        "state": 3939097689,
+        "calls": 78
+      },
+      "status": "ACTIVE",
+      "turnNumber": 2,
+      "currentPlayerId": "player-1",
+      "phase": "DRAW",
+      "winnerId": null,
+      "resultReason": null
+    },
+    "afterSecondDraw": {
+      "duelId": "duel-reference",
+      "rulesProfileId": "GX_LEGACY",
+      "engineVersion": "engine-reference",
+      "cardPoolVersion": "pool-reference",
+      "players": [
+        {
+          "playerId": "player-1",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-1-main-12",
+            "player-1-main-36",
+            "player-1-main-7",
+            "player-1-main-4",
+            "player-1-main-38",
+            "player-1-main-27",
+            "player-1-main-13",
+            "player-1-main-34",
+            "player-1-main-11",
+            "player-1-main-19",
+            "player-1-main-40",
+            "player-1-main-15",
+            "player-1-main-9",
+            "player-1-main-14",
+            "player-1-main-26",
+            "player-1-main-17",
+            "player-1-main-3",
+            "player-1-main-39",
+            "player-1-main-18",
+            "player-1-main-29",
+            "player-1-main-30",
+            "player-1-main-2",
+            "player-1-main-35",
+            "player-1-main-37",
+            "player-1-main-20",
+            "player-1-main-23",
+            "player-1-main-21",
+            "player-1-main-6",
+            "player-1-main-1",
+            "player-1-main-8",
+            "player-1-main-24",
+            "player-1-main-5",
+            "player-1-main-10",
+            "player-1-main-28"
+          ],
+          "hand": [
+            "player-1-main-32",
+            "player-1-main-22",
+            "player-1-main-16",
+            "player-1-main-31",
+            "player-1-main-33",
+            "player-1-main-25"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-1-extra-1", "player-1-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        },
+        {
+          "playerId": "player-2",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-2-main-37",
+            "player-2-main-29",
+            "player-2-main-23",
+            "player-2-main-11",
+            "player-2-main-39",
+            "player-2-main-38",
+            "player-2-main-14",
+            "player-2-main-15",
+            "player-2-main-36",
+            "player-2-main-31",
+            "player-2-main-1",
+            "player-2-main-2",
+            "player-2-main-33",
+            "player-2-main-22",
+            "player-2-main-3",
+            "player-2-main-6",
+            "player-2-main-18",
+            "player-2-main-32",
+            "player-2-main-12",
+            "player-2-main-20",
+            "player-2-main-34",
+            "player-2-main-8",
+            "player-2-main-10",
+            "player-2-main-16",
+            "player-2-main-26",
+            "player-2-main-17",
+            "player-2-main-35",
+            "player-2-main-30",
+            "player-2-main-40",
+            "player-2-main-19",
+            "player-2-main-25",
+            "player-2-main-21",
+            "player-2-main-5",
+            "player-2-main-9",
+            "player-2-main-24"
+          ],
+          "hand": [
+            "player-2-main-4",
+            "player-2-main-13",
+            "player-2-main-28",
+            "player-2-main-27",
+            "player-2-main-7"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-2-extra-1", "player-2-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        }
+      ],
+      "turnOrder": ["player-2", "player-1"],
+      "rngState": {
+        "seed": "paridade GX 🔥",
+        "state": 3939097689,
+        "calls": 78
+      },
+      "status": "ACTIVE",
+      "turnNumber": 2,
+      "currentPlayerId": "player-1",
+      "phase": "STANDBY",
+      "winnerId": null,
+      "resultReason": null
+    },
+    "secondMain": {
+      "duelId": "duel-reference",
+      "rulesProfileId": "GX_LEGACY",
+      "engineVersion": "engine-reference",
+      "cardPoolVersion": "pool-reference",
+      "players": [
+        {
+          "playerId": "player-1",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-1-main-12",
+            "player-1-main-36",
+            "player-1-main-7",
+            "player-1-main-4",
+            "player-1-main-38",
+            "player-1-main-27",
+            "player-1-main-13",
+            "player-1-main-34",
+            "player-1-main-11",
+            "player-1-main-19",
+            "player-1-main-40",
+            "player-1-main-15",
+            "player-1-main-9",
+            "player-1-main-14",
+            "player-1-main-26",
+            "player-1-main-17",
+            "player-1-main-3",
+            "player-1-main-39",
+            "player-1-main-18",
+            "player-1-main-29",
+            "player-1-main-30",
+            "player-1-main-2",
+            "player-1-main-35",
+            "player-1-main-37",
+            "player-1-main-20",
+            "player-1-main-23",
+            "player-1-main-21",
+            "player-1-main-6",
+            "player-1-main-1",
+            "player-1-main-8",
+            "player-1-main-24",
+            "player-1-main-5",
+            "player-1-main-10",
+            "player-1-main-28"
+          ],
+          "hand": [
+            "player-1-main-32",
+            "player-1-main-22",
+            "player-1-main-16",
+            "player-1-main-31",
+            "player-1-main-33",
+            "player-1-main-25"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-1-extra-1", "player-1-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        },
+        {
+          "playerId": "player-2",
+          "lifePoints": 8000,
+          "mainDeck": [
+            "player-2-main-37",
+            "player-2-main-29",
+            "player-2-main-23",
+            "player-2-main-11",
+            "player-2-main-39",
+            "player-2-main-38",
+            "player-2-main-14",
+            "player-2-main-15",
+            "player-2-main-36",
+            "player-2-main-31",
+            "player-2-main-1",
+            "player-2-main-2",
+            "player-2-main-33",
+            "player-2-main-22",
+            "player-2-main-3",
+            "player-2-main-6",
+            "player-2-main-18",
+            "player-2-main-32",
+            "player-2-main-12",
+            "player-2-main-20",
+            "player-2-main-34",
+            "player-2-main-8",
+            "player-2-main-10",
+            "player-2-main-16",
+            "player-2-main-26",
+            "player-2-main-17",
+            "player-2-main-35",
+            "player-2-main-30",
+            "player-2-main-40",
+            "player-2-main-19",
+            "player-2-main-25",
+            "player-2-main-21",
+            "player-2-main-5",
+            "player-2-main-9",
+            "player-2-main-24"
+          ],
+          "hand": [
+            "player-2-main-4",
+            "player-2-main-13",
+            "player-2-main-28",
+            "player-2-main-27",
+            "player-2-main-7"
+          ],
+          "graveyard": [],
+          "banishedFaceUp": [],
+          "banishedFaceDown": [],
+          "extraDeckFaceDown": ["player-2-extra-1", "player-2-extra-2"],
+          "extraDeckFaceUp": [],
+          "monsterZones": [null, null, null, null, null],
+          "spellTrapZones": [null, null, null, null, null],
+          "fieldZone": null,
+          "normalSummonsUsed": 0,
+          "normalSummonLimit": 1
+        }
+      ],
+      "turnOrder": ["player-2", "player-1"],
+      "rngState": {
+        "seed": "paridade GX 🔥",
+        "state": 3939097689,
+        "calls": 78
+      },
+      "status": "ACTIVE",
+      "turnNumber": 2,
+      "currentPlayerId": "player-1",
+      "phase": "MAIN_1",
+      "winnerId": null,
+      "resultReason": null
+    },
+    "secondLegalTransitions": ["BATTLE", "END"]
+  }
+}
