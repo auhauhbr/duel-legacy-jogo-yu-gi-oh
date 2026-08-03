@@ -1,0 +1,24 @@
+openapi: 3.1.0
+info:
+  title: Duel Legacy API
+  version: 0.0.0
+  description: Contrato neutro mínimo da API durante a fase de fundação.
+paths:
+  /health:
+    get:
+      operationId: health
+      summary: Verifica se a API está ativa.
+      responses:
+        "200":
+          description: Serviço disponível.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required:
+                  - status
+                properties:
+                  status:
+                    type: string
+                    const: ok

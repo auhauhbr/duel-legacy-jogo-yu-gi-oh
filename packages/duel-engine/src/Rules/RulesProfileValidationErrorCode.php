@@ -1,0 +1,16 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DuelLegacy\DuelEngine\Rules;
+
+enum RulesProfileValidationErrorCode: string
+{
+    case EMPTY_ID = 'EMPTY_ID';
+    case INVALID_STARTING_LIFE_POINTS = 'INVALID_STARTING_LIFE_POINTS';
+    case NEGATIVE_QUANTITY = 'NEGATIVE_QUANTITY';
+    case HAND_LIMIT_BELOW_STARTING_HAND_SIZE = 'HAND_LIMIT_BELOW_STARTING_HAND_SIZE';
+    case MAIN_DECK_MIN_ABOVE_MAX = 'MAIN_DECK_MIN_ABOVE_MAX';
+    case NO_ENABLED_SUMMONS = 'NO_ENABLED_SUMMONS';
+    case DUPLICATE_SUMMON_METHOD = 'DUPLICATE_SUMMON_METHOD';
+}

@@ -1,0 +1,38 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "duel-legacy/duel-engine",
+    "description": "Motor de Duelo determinístico e independente de framework do Duel Legacy.",
+    "type": "library",
+    "license": "proprietary",
+    "require": {
+        "php": "^8.3"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^13.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "DuelLegacy\\DuelEngine\\": "src/"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DuelLegacy\\DuelEngine\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "analyse": "phpstan analyse --no-progress --memory-limit=512M",
+        "syntax": "@php -r \"foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator('src')) as $file) { if ($file->isFile() && $file->getExtension() === 'php') { passthru(PHP_BINARY . ' -l ' . escapeshellarg($file->getPathname()), $code); if ($code !== 0) exit($code); } }\""
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

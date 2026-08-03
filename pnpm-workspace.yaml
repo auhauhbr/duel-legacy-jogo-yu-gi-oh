@@ -1,6 +1,8 @@
 packages:
-  - apps/*
-  - packages/*
+  - apps/web
+
+storeDir: .pnpm-store
+verifyDepsBeforeRun: false
 
 allowBuilds:
   esbuild: true
