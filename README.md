@@ -126,6 +126,9 @@ pela Konami.
 - agregado imutável das sete zonas tipadas fora do campo de um jogador, com
   validação da localização de cada papel, unicidade de `CardInstanceId` entre
   zonas, consultas globais de leitura e serialização determinística.
+- projeção tipada e somente de leitura de um `DuelPlayerState` legado para
+  `PlayerCardZones`, resolvendo explicitamente os IDs pelas `CardInstance`
+  fornecidas pelo chamador e preservando a ordem das sete zonas.
 
 ### 🚧 Em desenvolvimento
 
@@ -152,7 +155,7 @@ pela Konami.
 | Perfil de regras | `GX_LEGACY`, 8.000 LP, mão inicial de 5 cartas, limites de Deck e zonas                                       |
 | Estado           | Jogadores, Duelo, zonas, fases, posições, identificadores e validações estruturais                            |
 | Aleatoriedade    | Seed explícita, RNG reproduzível, serialização e Fisher–Yates determinístico                                  |
-| Cartas           | Definições e instâncias readonly, zonas ordenadas tipadas e agregado imutável das zonas fora do campo         |
+| Cartas           | Definições e instâncias readonly, zonas ordenadas tipadas, agregado imutável e projeção do estado legado      |
 | Preparação       | Embaralhamento dos dois Decks, distribuição das mãos e início do primeiro turno                               |
 | Fluxo            | Compra, Deck Out, Apoio, Principal 1 e processamento estrutural da Fase Final até o próximo turno             |
 | Restrições       | Sem compra nem batalha no primeiro turno, controle de Invocação-Normal, consulta e descarte do excesso da mão |
@@ -164,10 +167,15 @@ recebida é preservada, o índice zero continua sendo o topo do Deck Principal e
 IDs duplicados são rejeitados dentro da mesma coleção. `PlayerCardZones` agrega
 as sete zonas fora do campo, exige a localização correspondente em cada papel e
 rejeita IDs repetidos entre elas. Também oferece consultas globais somente de
-leitura e serialização determinística. As zonas de `DuelPlayerState` ainda
+leitura e serialização determinística. `PlayerCardZonesProjector` cria um
+snapshot tipado a partir de um `DuelPlayerState` e de uma lista explícita de
+`CardInstance`, resolve IDs pelo valor exato, aceita instâncias extras e mapeia
+diretamente as coleções legadas já separadas por orientação. A projeção não
+altera nem fica armazenada no estado legado, e snapshots existentes não são
+sincronizados com mudanças posteriores. As zonas de `DuelPlayerState` ainda
 armazenam IDs como strings e nenhuma operação existente foi migrada. Não há
-integração com esse estado, movimentação entre zonas, compra, descarte ou
-embaralhamento tipados, zonas de campo tipadas, catálogo, registro global de
+projeção inversa, movimentação entre zonas, compra, descarte ou embaralhamento
+tipados integrados, zonas de campo tipadas, catálogo, registro global de
 instâncias, efeitos executáveis, Correntes, ações legais, persistência ou cartas
 reais cadastradas.
 
@@ -277,11 +285,11 @@ O RNG foi projetado para repetibilidade do jogo, não para uso criptográfico.
 
 | Suíte atual   |  Testes | Assertions |
 | ------------- | ------: | ---------: |
-| `duel-engine` |     713 |      7.715 |
+| `duel-engine` |     735 |      7.873 |
 | API Laravel   |       2 |          4 |
-| **Total**     | **715** |  **7.719** |
+| **Total**     | **737** |  **7.877** |
 
-O motor possui **31 classes de teste** e **42 DataProviders**. O teste isolado
+O motor possui **32 classes de teste** e **44 DataProviders**. O teste isolado
 de paridade executa **4 testes e 193 assertions**, cobrindo RNG, embaralhamento,
 serialização e fluxo estrutural contra os vetores preservados da migração.
 
@@ -402,6 +410,7 @@ health check ou executar a suíte atual.
 - modelos mínimos e imutáveis de definições e instâncias de cartas;
 - coleção ordenada e imutável de instâncias para zonas fora do campo;
 - agregado imutável das sete zonas ordenadas fora do campo;
+- projeção tipada e somente de leitura das zonas legadas fora do campo;
 - RNG e embaralhamento determinísticos;
 - migração do backend e dos motores para PHP;
 - testes automatizados e ferramentas de qualidade.
@@ -448,10 +457,11 @@ marcos correspondentes, sem serem tratadas como tecnologias atuais.
 - não há efeitos executáveis, Correntes ou ações legais de cartas;
 - não há catálogo de cartas nem cartas reais cadastradas;
 - não há registro global de instâncias;
-- as coleções tipadas ainda não estão integradas ao `DuelPlayerState` nem às
-  operações atuais;
-- não há migração do estado atual, movimentação entre zonas, compra, descarte
-  ou embaralhamento tipados integrados, nem campo tipado;
+- `PlayerCardZones` não fica armazenado no `DuelPlayerState`, e as operações
+  atuais continuam usando as coleções legadas de IDs;
+- não há sincronização automática, projeção inversa, migração do estado atual,
+  movimentação entre zonas, compra, descarte ou embaralhamento tipados
+  integrados, nem campo tipado;
 - o processamento da Fase Final não resolve efeitos, Correntes ou efeitos
   pendentes;
 - o início do próximo turno não processa automaticamente a Fase de Compra;
