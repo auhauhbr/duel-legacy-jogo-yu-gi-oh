@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace DuelLegacy\DuelEngine;
 
 use DomainException;
+use DuelLegacy\DuelEngine\Cards\CardInstance;
+use DuelLegacy\DuelEngine\Cards\CardLocation;
 use DuelLegacy\DuelEngine\Duels\DuelResultReason;
 use DuelLegacy\DuelEngine\Duels\DuelState;
 use DuelLegacy\DuelEngine\Duels\DuelStatus;
+use DuelLegacy\DuelEngine\Identifiers\CardInstanceId;
 use DuelLegacy\DuelEngine\Internal\EcmaScriptString;
 use DuelLegacy\DuelEngine\Phases\DuelPhase;
 use DuelLegacy\DuelEngine\Phases\PhaseOrder;
@@ -20,6 +23,10 @@ use DuelLegacy\DuelEngine\Rules\RulesProfile;
 use DuelLegacy\DuelEngine\Rules\RulesProfileQuantityField;
 use DuelLegacy\DuelEngine\Rules\RulesProfileValidationError;
 use DuelLegacy\DuelEngine\Rules\RulesProfileValidationResult;
+use DuelLegacy\DuelEngine\Zones\OrderedCardZone;
+use DuelLegacy\DuelEngine\Zones\PlayerCardZones;
+use DuelLegacy\DuelEngine\Zones\PlayerCardZonesDrawer;
+use DuelLegacy\DuelEngine\Zones\PlayerCardZonesHandExcessDiscarder;
 use InvalidArgumentException;
 
 final class Engine
@@ -79,8 +86,8 @@ final class Engine
     }
 
     /**
-     * @param  list<string>  $mainDeck
-     * @param  list<string>  $extraDeck
+     * @param  list<CardInstance>  $mainDeck
+     * @param  list<CardInstance>  $extraDeck
      */
     public static function createInitialPlayerState(
         RulesProfile $profile,
@@ -94,15 +101,20 @@ final class Engine
             throw new InvalidArgumentException('playerId não pode ser vazio.');
         }
 
-        $allCardIds = [...$mainDeck, ...$extraDeck];
-        foreach ($allCardIds as $cardId) {
-            if (EcmaScriptString::isBlank($cardId)) {
-                throw new InvalidArgumentException('IDs de instância de carta não podem ser vazios.');
-            }
-        }
+        self::assertCardInstanceList($mainDeck, 'mainDeck');
+        self::assertCardInstanceList($extraDeck, 'extraDeck');
 
-        if (count(array_unique($allCardIds, SORT_STRING)) !== count($allCardIds)) {
-            throw new InvalidArgumentException('IDs de instância de carta devem ser únicos.');
+        $allCardIds = array_map(
+            static fn (CardInstance $card): string => $card->id->value,
+            [...$mainDeck, ...$extraDeck],
+        );
+        $seenCardIds = [];
+        foreach ($allCardIds as $cardId) {
+            $key = "id:{$cardId}";
+            if (isset($seenCardIds[$key])) {
+                throw new InvalidArgumentException('IDs de instância de carta devem ser únicos.');
+            }
+            $seenCardIds[$key] = true;
         }
 
         if (count($extraDeck) > $profile->extraDeckMax) {
@@ -112,13 +124,15 @@ final class Engine
         return new DuelPlayerState(
             playerId: $playerId,
             lifePoints: (int) $profile->startingLifePoints,
-            mainDeck: [...$mainDeck],
-            hand: [],
-            graveyard: [],
-            banishedFaceUp: [],
-            banishedFaceDown: [],
-            extraDeckFaceDown: [...$extraDeck],
-            extraDeckFaceUp: [],
+            cardZones: new PlayerCardZones(
+                mainDeck: new OrderedCardZone(CardLocation::MAIN_DECK, $mainDeck),
+                hand: new OrderedCardZone(CardLocation::HAND),
+                graveyard: new OrderedCardZone(CardLocation::GRAVEYARD),
+                banishedFaceUp: new OrderedCardZone(CardLocation::BANISHED_FACE_UP),
+                banishedFaceDown: new OrderedCardZone(CardLocation::BANISHED_FACE_DOWN),
+                extraDeckFaceDown: new OrderedCardZone(CardLocation::EXTRA_DECK_FACE_DOWN, $extraDeck),
+                extraDeckFaceUp: new OrderedCardZone(CardLocation::EXTRA_DECK_FACE_UP),
+            ),
             monsterZones: array_fill(0, (int) $profile->mainMonsterZones, null),
             spellTrapZones: array_fill(0, (int) $profile->spellTrapZones, null),
             fieldZone: null,
@@ -258,16 +272,19 @@ final class Engine
         if ($amount < 0) {
             throw new InvalidArgumentException('A quantidade de compra não pode ser negativa.');
         }
-        if ($amount > count($playerState->mainDeck)) {
+        if ($amount > $playerState->cardZones->mainDeck->count()) {
             throw new InvalidArgumentException('O Deck Principal não possui cartas suficientes.');
         }
 
         $integerAmount = (int) $amount;
-        $drawn = array_slice($playerState->mainDeck, 0, $integerAmount);
-        $nextPlayer = self::clonePlayer($playerState)->with([
-            'mainDeck' => array_slice($playerState->mainDeck, $integerAmount),
-            'hand' => [...$playerState->hand, ...$drawn],
-        ]);
+        $cardZones = $playerState->cardZones;
+        $drawn = [];
+        $drawer = new PlayerCardZonesDrawer;
+        for ($index = 0; $index < $integerAmount; $index++) {
+            $drawn[] = $cardZones->mainDeck->cards()[0]->id->value;
+            $cardZones = $drawer->draw($cardZones);
+        }
+        $nextPlayer = self::clonePlayer($playerState)->with(['cardZones' => $cardZones]);
 
         return new DrawCardsResult($nextPlayer, $drawn);
     }
@@ -286,23 +303,23 @@ final class Engine
         }
         self::validateCoreState($duelState, $profile);
         foreach ($duelState->players as $player) {
-            if (count($player->mainDeck) < $profile->startingHandSize) {
+            if ($player->cardZones->mainDeck->count() < $profile->startingHandSize) {
                 throw new DomainException('Jogador sem cartas suficientes para a mão inicial.');
             }
         }
 
         $rngState = self::createDeterministicRng($seed);
         $firstPlayer = self::findPlayer($duelState, $duelState->turnOrder[0]);
-        $firstShuffle = self::shuffleDeterministically($firstPlayer->mainDeck, $rngState);
+        $firstShuffle = self::shuffleDeterministically($firstPlayer->cardZones->mainDeck->cards(), $rngState);
         $secondPlayer = self::findPlayer($duelState, $duelState->turnOrder[1]);
-        $secondShuffle = self::shuffleDeterministically($secondPlayer->mainDeck, $firstShuffle->nextState);
+        $secondShuffle = self::shuffleDeterministically($secondPlayer->cardZones->mainDeck->cards(), $firstShuffle->nextState);
 
         $preparedFirst = self::drawCardsFromMainDeck(
-            self::clonePlayer($firstPlayer)->with(['mainDeck' => $firstShuffle->items]),
+            self::clonePlayer($firstPlayer)->with(['cardZones' => $firstPlayer->cardZones->withZone(new OrderedCardZone(CardLocation::MAIN_DECK, $firstShuffle->items))]),
             $profile->startingHandSize,
         )->playerState;
         $preparedSecond = self::drawCardsFromMainDeck(
-            self::clonePlayer($secondPlayer)->with(['mainDeck' => $secondShuffle->items]),
+            self::clonePlayer($secondPlayer)->with(['cardZones' => $secondPlayer->cardZones->withZone(new OrderedCardZone(CardLocation::MAIN_DECK, $secondShuffle->items))]),
             $profile->startingHandSize,
         )->playerState;
         $players = $duelState->players[0]->playerId === $preparedFirst->playerId
@@ -342,7 +359,7 @@ final class Engine
         self::assertProfileMatches($duelState, $profile);
         self::validateCoreState($duelState, $profile);
         foreach ($duelState->players as $player) {
-            if (count($player->hand) !== $profile->startingHandSize) {
+            if ($player->cardZones->hand->count() !== $profile->startingHandSize) {
                 throw new DomainException('A mão inicial é incompatível com o perfil.');
             }
         }
@@ -378,7 +395,7 @@ final class Engine
             return self::copyState($duelState, ['players' => $players, 'phase' => DuelPhase::STANDBY]);
         }
 
-        if ($players[$currentIndex]->mainDeck === []) {
+        if ($players[$currentIndex]->cardZones->mainDeck->isEmpty()) {
             $winner = $players[1 - $currentIndex];
 
             return self::copyState($duelState, [
@@ -490,7 +507,7 @@ final class Engine
         }
         $player = self::findPlayer($duelState, $currentPlayerId);
 
-        return max(0, count($player->hand) - (int) $profile->handLimit);
+        return max(0, $player->cardZones->hand->count() - (int) $profile->handLimit);
     }
 
     /** @param list<string> $selectedCardInstanceIds */
@@ -524,6 +541,7 @@ final class Engine
         }
 
         $validatedSelection = [];
+        $typedSelection = [];
         foreach ($selectedCardInstanceIds as $selectedCardInstanceId) {
             if (EcmaScriptString::isBlank($selectedCardInstanceId)) {
                 throw new InvalidArgumentException('IDs selecionados para descarte não podem ser vazios.');
@@ -531,28 +549,23 @@ final class Engine
             if (in_array($selectedCardInstanceId, $validatedSelection, true)) {
                 throw new InvalidArgumentException('IDs selecionados para descarte devem ser únicos.');
             }
-            if (! in_array($selectedCardInstanceId, $currentPlayer->hand, true)) {
+            $cardInstanceId = new CardInstanceId($selectedCardInstanceId);
+            if (! $currentPlayer->cardZones->hand->contains($cardInstanceId)) {
                 throw new InvalidArgumentException("A carta selecionada não está na mão do jogador atual: {$selectedCardInstanceId}.");
             }
             $validatedSelection[] = $selectedCardInstanceId;
+            $typedSelection[] = $cardInstanceId;
         }
 
-        $remainingHand = [];
-        $discardedCards = [];
-        foreach ($currentPlayer->hand as $cardInstanceId) {
-            if (in_array($cardInstanceId, $validatedSelection, true)) {
-                $discardedCards[] = $cardInstanceId;
-            } else {
-                $remainingHand[] = $cardInstanceId;
-            }
-        }
+        $cardZones = (new PlayerCardZonesHandExcessDiscarder)->discardExcess(
+            $currentPlayer->cardZones,
+            (int) $profile->handLimit,
+            $typedSelection,
+        );
 
         $players = array_map(self::clonePlayer(...), $duelState->players);
         $currentPlayerIndex = self::findPlayerIndex($players, $currentPlayerId);
-        $players[$currentPlayerIndex] = $players[$currentPlayerIndex]->with([
-            'hand' => [...$remainingHand],
-            'graveyard' => [...$currentPlayer->graveyard, ...$discardedCards],
-        ]);
+        $players[$currentPlayerIndex] = $players[$currentPlayerIndex]->with(['cardZones' => $cardZones]);
 
         return self::copyState($duelState, ['players' => $players]);
     }
@@ -629,24 +642,21 @@ final class Engine
     /** @param list<DuelPlayerState> $players */
     private static function validateUniqueCardInstanceIds(array $players): void
     {
-        $all = [];
+        $seenIds = [];
         foreach ($players as $player) {
-            $all = [
-                ...$all,
-                ...$player->mainDeck,
-                ...$player->hand,
-                ...$player->graveyard,
-                ...$player->banishedFaceUp,
-                ...$player->banishedFaceDown,
-                ...$player->extraDeckFaceDown,
-                ...$player->extraDeckFaceUp,
+            $ids = [
+                ...array_map(static fn (CardInstance $card): string => $card->id->value, array_merge(...array_map(static fn (OrderedCardZone $zone): array => $zone->cards(), $player->cardZones->zones()))),
                 ...array_values(array_filter($player->monsterZones, static fn (?string $id): bool => $id !== null)),
                 ...array_values(array_filter($player->spellTrapZones, static fn (?string $id): bool => $id !== null)),
                 ...($player->fieldZone === null ? [] : [$player->fieldZone]),
             ];
-        }
-        if (count(array_unique($all, SORT_STRING)) !== count($all)) {
-            throw new InvalidArgumentException('IDs de instância de carta devem ser únicos no Duelo.');
+            foreach ($ids as $id) {
+                $key = "id:{$id}";
+                if (isset($seenIds[$key])) {
+                    throw new InvalidArgumentException('IDs de instância de carta devem ser únicos no Duelo.');
+                }
+                $seenIds[$key] = true;
+            }
         }
     }
 
@@ -715,19 +725,26 @@ final class Engine
         return new DuelPlayerState(
             playerId: $player->playerId,
             lifePoints: $player->lifePoints,
-            mainDeck: [...$player->mainDeck],
-            hand: [...$player->hand],
-            graveyard: [...$player->graveyard],
-            banishedFaceUp: [...$player->banishedFaceUp],
-            banishedFaceDown: [...$player->banishedFaceDown],
-            extraDeckFaceDown: [...$player->extraDeckFaceDown],
-            extraDeckFaceUp: [...$player->extraDeckFaceUp],
+            cardZones: $player->cardZones,
             monsterZones: [...$player->monsterZones],
             spellTrapZones: [...$player->spellTrapZones],
             fieldZone: $player->fieldZone,
             normalSummonsUsed: $player->normalSummonsUsed,
             normalSummonLimit: $player->normalSummonLimit,
         );
+    }
+
+    /** @param array<array-key, mixed> $cards */
+    private static function assertCardInstanceList(array $cards, string $name): void
+    {
+        if (! array_is_list($cards)) {
+            throw new InvalidArgumentException("{$name} deve ser uma lista.");
+        }
+        foreach ($cards as $card) {
+            if (! $card instanceof CardInstance) {
+                throw new InvalidArgumentException("{$name} deve conter apenas CardInstance.");
+            }
+        }
     }
 
     /** @param array<string, mixed> $changes */

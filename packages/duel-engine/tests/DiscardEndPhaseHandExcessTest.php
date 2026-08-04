@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DuelLegacy\DuelEngine\Tests;
 
 use DomainException;
+use DuelLegacy\DuelEngine\Cards\CardLocation;
 use DuelLegacy\DuelEngine\Duels\DuelState;
 use DuelLegacy\DuelEngine\Duels\DuelStatus;
 use DuelLegacy\DuelEngine\Engine;
@@ -64,8 +65,8 @@ final class DiscardEndPhaseHandExcessTest extends TestCase
         $result = discardEndPhaseHandExcess($duel, gxLegacyProfile(), $selection);
 
         self::assertSame($expectedState, $result->toArray());
-        self::assertSame($expectedHand, $result->players[0]->hand);
-        self::assertSame($expectedGraveyard, $result->players[0]->graveyard);
+        self::assertSame($expectedHand, TestFactory::ids($result->players[0]->cardZones->hand));
+        self::assertSame($expectedGraveyard, TestFactory::ids($result->players[0]->cardZones->graveyard));
         self::assertSame(DuelStatus::ACTIVE, $result->status);
         self::assertSame(DuelPhase::END, $result->phase);
         self::assertSame($duel->currentPlayerId, $result->currentPlayerId);
@@ -85,8 +86,8 @@ final class DiscardEndPhaseHandExcessTest extends TestCase
         $result = discardEndPhaseHandExcess($duel, gxLegacyProfile(), ['C']);
 
         self::assertSame($expectedState, $result->toArray());
-        self::assertSame(['A', 'B', 'D', 'E', 'F', 'G'], $result->players[1]->hand);
-        self::assertSame(['old-p2', 'C'], $result->players[1]->graveyard);
+        self::assertSame(['A', 'B', 'D', 'E', 'F', 'G'], TestFactory::ids($result->players[1]->cardZones->hand));
+        self::assertSame(['old-p2', 'C'], TestFactory::ids($result->players[1]->cardZones->graveyard));
         self::assertSame($opponentSnapshot, $result->players[0]->toArray());
         self::assertSame('player-2', $result->currentPlayerId);
     }
@@ -98,8 +99,8 @@ final class DiscardEndPhaseHandExcessTest extends TestCase
 
         $result = discardEndPhaseHandExcess($duel, $profile, ['I', 'B']);
 
-        self::assertSame(['A', 'C', 'D', 'E', 'F', 'G', 'H'], $result->players[0]->hand);
-        self::assertSame(['player-1-graveyard', 'B', 'I'], $result->players[0]->graveyard);
+        self::assertSame(['A', 'C', 'D', 'E', 'F', 'G', 'H'], TestFactory::ids($result->players[0]->cardZones->hand));
+        self::assertSame(['player-1-graveyard', 'B', 'I'], TestFactory::ids($result->players[0]->cardZones->graveyard));
     }
 
     public function test_zero_required_discard_returns_independent_equivalent_state(): void
@@ -120,8 +121,8 @@ final class DiscardEndPhaseHandExcessTest extends TestCase
         $hand = ['card', ' card', 'card ', 'Card', 'cárd', 'card-1', 'card-01'];
         $result = discardEndPhaseHandExcess($this->withCurrentPlayer($hand), gxLegacyProfile(), [' card']);
 
-        self::assertSame(['card', 'card ', 'Card', 'cárd', 'card-1', 'card-01'], $result->players[0]->hand);
-        self::assertSame(['player-1-graveyard', ' card'], $result->players[0]->graveyard);
+        self::assertSame(['card', 'card ', 'Card', 'cárd', 'card-1', 'card-01'], TestFactory::ids($result->players[0]->cardZones->hand));
+        self::assertSame(['player-1-graveyard', ' card'], TestFactory::ids($result->players[0]->cardZones->graveyard));
     }
 
     /** @return iterable<string, array{list<string>, list<string>, string}> */
@@ -305,7 +306,7 @@ final class DiscardEndPhaseHandExcessTest extends TestCase
         $serializedResult = $first->toArray();
         $serializedResult['players'][0]['hand'][] = 'mutated-copy';
         self::assertSame($duelSnapshot, $duel->toArray());
-        self::assertSame(['A', 'C', 'D', 'E', 'F', 'G'], $first->players[0]->hand);
+        self::assertSame(['A', 'C', 'D', 'E', 'F', 'G'], TestFactory::ids($first->players[0]->cardZones->hand));
     }
 
     public function test_function_and_engine_method_are_equivalent(): void
@@ -328,10 +329,16 @@ final class DiscardEndPhaseHandExcessTest extends TestCase
         $duel = TestFactory::endDuel($turnNumber);
         $players = $duel->players;
         $currentPlayerIndex = $turnNumber % 2 === 1 ? 0 : 1;
-        $players[$currentPlayerIndex] = $players[$currentPlayerIndex]->with([
-            ...$currentPlayerChanges,
-            'hand' => [...$hand],
-        ]);
+        $player = TestFactory::withZoneIds($players[$currentPlayerIndex], CardLocation::HAND, $hand);
+        if (isset($currentPlayerChanges['graveyard']) && is_array($currentPlayerChanges['graveyard'])) {
+            $graveyard = $currentPlayerChanges['graveyard'];
+            if (! array_is_list($graveyard) || array_filter($graveyard, static fn (mixed $id): bool => ! is_string($id)) !== []) {
+                throw new \LogicException('Fixture de Cemitério inválida.');
+            }
+            $player = TestFactory::withZoneIds($player, CardLocation::GRAVEYARD, $graveyard);
+            unset($currentPlayerChanges['graveyard']);
+        }
+        $players[$currentPlayerIndex] = $player->with($currentPlayerChanges);
 
         return $duel->with(['players' => $players]);
     }

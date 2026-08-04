@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DuelLegacy\DuelEngine\Tests;
 
+use DuelLegacy\DuelEngine\Cards\CardLocation;
 use DuelLegacy\DuelEngine\Tests\Support\TestFactory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -76,7 +77,11 @@ final class CreateInitialDuelStateTest extends TestCase
         } catch (InvalidArgumentException $exception) {
             self::assertSame('As zonas do jogador são incompatíveis com o perfil.', $exception->getMessage());
         }
-        $duplicate = TestFactory::player('p2')->with(['hand' => [$first->mainDeck[0]]]);
+        $duplicate = TestFactory::withZoneIds(
+            TestFactory::player('p2'),
+            CardLocation::HAND,
+            [$first->cardZones->mainDeck->cards()[0]->id->value],
+        );
         $this->expectExceptionMessage('IDs de instância de carta devem ser únicos no Duelo.');
         createInitialDuelState('d', gxLegacyProfile(), 'e', 'p', [$first, $duplicate], 'p1');
     }

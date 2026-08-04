@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DuelLegacy\DuelEngine\Tests;
 
+use DuelLegacy\DuelEngine\Cards\CardLocation;
 use DuelLegacy\DuelEngine\Tests\Support\TestFactory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -15,12 +16,13 @@ final class DrawCardsFromMainDeckTest extends TestCase
 {
     public function test_draws_from_index_zero_and_appends_to_hand(): void
     {
-        $player = TestFactory::player('p1', 4)->with(['mainDeck' => ['A', 'B', 'C', 'D'], 'hand' => ['X']]);
+        $player = TestFactory::withZoneIds(TestFactory::player('p1', 4), CardLocation::MAIN_DECK, ['A', 'B', 'C', 'D']);
+        $player = TestFactory::withZoneIds($player, CardLocation::HAND, ['X']);
         $snapshot = $player->toArray();
         $result = drawCardsFromMainDeck($player, 3);
         self::assertSame(['A', 'B', 'C'], $result->drawnCardIds);
-        self::assertSame(['D'], $result->playerState->mainDeck);
-        self::assertSame(['X', 'A', 'B', 'C'], $result->playerState->hand);
+        self::assertSame(['D'], TestFactory::ids($result->playerState->cardZones->mainDeck));
+        self::assertSame(['X', 'A', 'B', 'C'], TestFactory::ids($result->playerState->cardZones->hand));
         self::assertSame($snapshot, $player->toArray());
         self::assertNotSame($player, $result->playerState);
     }
@@ -30,8 +32,8 @@ final class DrawCardsFromMainDeckTest extends TestCase
         $player = TestFactory::player('p1', 2);
         self::assertSame($player->toArray(), drawCardsFromMainDeck($player, 0)->playerState->toArray());
         $result = drawCardsFromMainDeck($player, 2);
-        self::assertSame([], $result->playerState->mainDeck);
-        self::assertSame($player->mainDeck, $result->drawnCardIds);
+        self::assertTrue($result->playerState->cardZones->mainDeck->isEmpty());
+        self::assertSame(TestFactory::ids($player->cardZones->mainDeck), $result->drawnCardIds);
     }
 
     /** @return iterable<array{int|float, string}> */
@@ -61,7 +63,7 @@ final class DrawCardsFromMainDeckTest extends TestCase
 
     public function test_empty_deck_rejects_positive_draw_without_mutation(): void
     {
-        $player = TestFactory::player('p1', 1)->with(['mainDeck' => []]);
+        $player = TestFactory::withZoneIds(TestFactory::player('p1', 1), CardLocation::MAIN_DECK, []);
         $snapshot = $player->toArray();
         try {
             drawCardsFromMainDeck($player, 1);

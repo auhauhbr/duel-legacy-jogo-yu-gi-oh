@@ -48,8 +48,7 @@ final class StartNextTurnTest extends TestCase
         $duel = TestFactory::endDuel();
         $result = startNextTurn($duel, gxLegacyProfile());
         foreach ([0, 1] as $index) {
-            self::assertSame($duel->players[$index]->mainDeck, $result->players[$index]->mainDeck);
-            self::assertSame($duel->players[$index]->hand, $result->players[$index]->hand);
+            self::assertSame($duel->players[$index]->cardZones, $result->players[$index]->cardZones);
         }
     }
 

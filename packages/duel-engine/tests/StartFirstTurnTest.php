@@ -23,7 +23,7 @@ final class StartFirstTurnTest extends TestCase
         self::assertSame(1, $started->turnNumber);
         self::assertSame('player-2', $started->currentPlayerId);
         self::assertSame(DuelPhase::DRAW, $started->phase);
-        self::assertSame($prepared->players[0]->hand, $started->players[0]->hand);
+        self::assertSame($prepared->players[0]->cardZones->hand, $started->players[0]->cardZones->hand);
         self::assertEquals($prepared->rngState, $started->rngState);
         self::assertNotSame($prepared->rngState, $started->rngState);
         self::assertSame($snapshot, $prepared->toArray());

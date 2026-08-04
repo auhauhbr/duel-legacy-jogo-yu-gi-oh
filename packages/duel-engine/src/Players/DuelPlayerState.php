@@ -4,29 +4,21 @@ declare(strict_types=1);
 
 namespace DuelLegacy\DuelEngine\Players;
 
+use DuelLegacy\DuelEngine\Cards\CardInstance;
+use DuelLegacy\DuelEngine\Zones\OrderedCardZone;
+use DuelLegacy\DuelEngine\Zones\PlayerCardZones;
+use InvalidArgumentException;
+
 final readonly class DuelPlayerState
 {
     /**
-     * @param  list<string>  $mainDeck
-     * @param  list<string>  $hand
-     * @param  list<string>  $graveyard
-     * @param  list<string>  $banishedFaceUp
-     * @param  list<string>  $banishedFaceDown
-     * @param  list<string>  $extraDeckFaceDown
-     * @param  list<string>  $extraDeckFaceUp
      * @param  list<?string>  $monsterZones
      * @param  list<?string>  $spellTrapZones
      */
     public function __construct(
         public string $playerId,
         public int $lifePoints,
-        public array $mainDeck,
-        public array $hand,
-        public array $graveyard,
-        public array $banishedFaceUp,
-        public array $banishedFaceDown,
-        public array $extraDeckFaceDown,
-        public array $extraDeckFaceUp,
+        public PlayerCardZones $cardZones,
         public array $monsterZones,
         public array $spellTrapZones,
         public ?string $fieldZone,
@@ -37,16 +29,16 @@ final readonly class DuelPlayerState
     /** @param array<string, mixed> $changes */
     public function with(array $changes): self
     {
+        foreach (['mainDeck', 'hand', 'graveyard', 'banishedFaceUp', 'banishedFaceDown', 'extraDeckFaceDown', 'extraDeckFaceUp'] as $legacyKey) {
+            if (array_key_exists($legacyKey, $changes)) {
+                throw new InvalidArgumentException('As zonas de cartas fora do campo devem ser alteradas por cardZones.');
+            }
+        }
+
         return new self(
             playerId: $changes['playerId'] ?? $this->playerId,
             lifePoints: $changes['lifePoints'] ?? $this->lifePoints,
-            mainDeck: $changes['mainDeck'] ?? $this->mainDeck,
-            hand: $changes['hand'] ?? $this->hand,
-            graveyard: $changes['graveyard'] ?? $this->graveyard,
-            banishedFaceUp: $changes['banishedFaceUp'] ?? $this->banishedFaceUp,
-            banishedFaceDown: $changes['banishedFaceDown'] ?? $this->banishedFaceDown,
-            extraDeckFaceDown: $changes['extraDeckFaceDown'] ?? $this->extraDeckFaceDown,
-            extraDeckFaceUp: $changes['extraDeckFaceUp'] ?? $this->extraDeckFaceUp,
+            cardZones: $changes['cardZones'] ?? $this->cardZones,
             monsterZones: $changes['monsterZones'] ?? $this->monsterZones,
             spellTrapZones: $changes['spellTrapZones'] ?? $this->spellTrapZones,
             fieldZone: array_key_exists('fieldZone', $changes) ? $changes['fieldZone'] : $this->fieldZone,
@@ -61,18 +53,27 @@ final readonly class DuelPlayerState
         return [
             'playerId' => $this->playerId,
             'lifePoints' => $this->lifePoints,
-            'mainDeck' => $this->mainDeck,
-            'hand' => $this->hand,
-            'graveyard' => $this->graveyard,
-            'banishedFaceUp' => $this->banishedFaceUp,
-            'banishedFaceDown' => $this->banishedFaceDown,
-            'extraDeckFaceDown' => $this->extraDeckFaceDown,
-            'extraDeckFaceUp' => $this->extraDeckFaceUp,
+            'mainDeck' => self::ids($this->cardZones->mainDeck),
+            'hand' => self::ids($this->cardZones->hand),
+            'graveyard' => self::ids($this->cardZones->graveyard),
+            'banishedFaceUp' => self::ids($this->cardZones->banishedFaceUp),
+            'banishedFaceDown' => self::ids($this->cardZones->banishedFaceDown),
+            'extraDeckFaceDown' => self::ids($this->cardZones->extraDeckFaceDown),
+            'extraDeckFaceUp' => self::ids($this->cardZones->extraDeckFaceUp),
             'monsterZones' => $this->monsterZones,
             'spellTrapZones' => $this->spellTrapZones,
             'fieldZone' => $this->fieldZone,
             'normalSummonsUsed' => $this->normalSummonsUsed,
             'normalSummonLimit' => $this->normalSummonLimit,
         ];
+    }
+
+    /** @return list<string> */
+    private static function ids(OrderedCardZone $zone): array
+    {
+        return array_map(
+            static fn (CardInstance $card): string => $card->id->value,
+            $zone->cards(),
+        );
     }
 }

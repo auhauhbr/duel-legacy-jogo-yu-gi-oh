@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DuelLegacy\DuelEngine\Tests;
 
+use DuelLegacy\DuelEngine\Cards\CardLocation;
 use DuelLegacy\DuelEngine\Duels\DuelResultReason;
 use DuelLegacy\DuelEngine\Duels\DuelStatus;
 use DuelLegacy\DuelEngine\Phases\DuelPhase;
@@ -19,15 +20,15 @@ final class ProcessDrawPhaseTest extends TestCase
     {
         $first = TestFactory::activeDuel(DuelPhase::DRAW, 1);
         $skipped = processDrawPhase($first, gxLegacyProfile());
-        self::assertSame($first->players[0]->hand, $skipped->players[0]->hand);
+        self::assertSame($first->players[0]->cardZones->hand, $skipped->players[0]->cardZones->hand);
         self::assertSame(DuelPhase::STANDBY, $skipped->phase);
         self::assertEquals($first->rngState, $skipped->rngState);
 
         $second = TestFactory::activeDuel(DuelPhase::DRAW, 2);
         $current = $second->players[1];
         $drawn = processDrawPhase($second, gxLegacyProfile());
-        self::assertSame([...$current->hand, $current->mainDeck[0]], $drawn->players[1]->hand);
-        self::assertSame(array_slice($current->mainDeck, 1), $drawn->players[1]->mainDeck);
+        self::assertSame([...TestFactory::ids($current->cardZones->hand), $current->cardZones->mainDeck->cards()[0]->id->value], TestFactory::ids($drawn->players[1]->cardZones->hand));
+        self::assertSame(array_slice(TestFactory::ids($current->cardZones->mainDeck), 1), TestFactory::ids($drawn->players[1]->cardZones->mainDeck));
         self::assertSame(DuelPhase::STANDBY, $drawn->phase);
         self::assertSame($second->toArray(), TestFactory::activeDuel(DuelPhase::DRAW, 2)->toArray());
     }
@@ -36,7 +37,7 @@ final class ProcessDrawPhaseTest extends TestCase
     {
         $duel = TestFactory::activeDuel(DuelPhase::DRAW, 2);
         $players = $duel->players;
-        $players[1] = $players[1]->with(['mainDeck' => []]);
+        $players[1] = TestFactory::withZoneIds($players[1], CardLocation::MAIN_DECK, []);
         $duel = $duel->with(['players' => $players]);
         $snapshot = $duel->toArray();
         $result = processDrawPhase($duel, gxLegacyProfile());
@@ -55,7 +56,7 @@ final class ProcessDrawPhaseTest extends TestCase
     {
         $duel = TestFactory::activeDuel(DuelPhase::DRAW);
         $result = processDrawPhase($duel, TestFactory::profile(['drawOnFirstTurn' => true]));
-        self::assertCount(count($duel->players[0]->hand) + 1, $result->players[0]->hand);
+        self::assertSame($duel->players[0]->cardZones->hand->count() + 1, $result->players[0]->cardZones->hand->count());
     }
 
     public function test_rejects_invalid_active_draw_state(): void
