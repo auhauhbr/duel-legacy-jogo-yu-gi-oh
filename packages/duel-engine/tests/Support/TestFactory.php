@@ -14,6 +14,7 @@ use DuelLegacy\DuelEngine\Identifiers\CardInstanceId;
 use DuelLegacy\DuelEngine\Phases\DuelPhase;
 use DuelLegacy\DuelEngine\Players\DuelPlayerState;
 use DuelLegacy\DuelEngine\Rules\RulesProfile;
+use DuelLegacy\DuelEngine\Zones\MonsterZones;
 use DuelLegacy\DuelEngine\Zones\OrderedCardZone;
 use DuelLegacy\DuelEngine\Zones\PlayerCardZones;
 
@@ -49,7 +50,7 @@ final class TestFactory
         return $player->with([
             'lifePoints' => $playerId === 'player-1' ? 7100 : 6200,
             'cardZones' => $cardZones,
-            'monsterZones' => [null, "{$playerId}-monster", null, null, null],
+            'monsterZones' => self::monsterZones([null, self::card("{$playerId}-monster"), null, null, null]),
             'spellTrapZones' => [null, null, "{$playerId}-spell", null, null],
             'fieldZone' => "{$playerId}-field",
             'normalSummonsUsed' => $playerId === 'player-1' ? 1 : 0,
@@ -127,6 +128,12 @@ final class TestFactory
     public static function zone(CardLocation $location, array $cards = []): OrderedCardZone
     {
         return new OrderedCardZone($location, $cards);
+    }
+
+    /** @param list<?CardInstance> $slots */
+    public static function monsterZones(array $slots): MonsterZones
+    {
+        return new MonsterZones($slots);
     }
 
     /** @param list<string> $instanceIds */
