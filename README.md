@@ -118,7 +118,11 @@ pela Konami.
 - Atributos, Nível, ATK, DEF e categorias estruturais de Monstros;
 - subtipos estruturais de Magias e Armadilhas;
 - instância mínima e imutável de carta, com ID físico separado do ID lógico da
-  definição e referência tipada para `CardDefinition`.
+  definição e referência tipada para `CardDefinition`;
+- coleção tipada e imutável de `CardInstance` para zonas ordenadas fora do
+  campo, com preservação da ordem e rejeição de IDs duplicados na mesma zona;
+- suporte estrutural isolado para Deck Principal, mão, Cemitério, cartas
+  banidas e Deck Adicional.
 
 ### 🚧 Em desenvolvimento
 
@@ -145,16 +149,20 @@ pela Konami.
 | Perfil de regras | `GX_LEGACY`, 8.000 LP, mão inicial de 5 cartas, limites de Deck e zonas                                       |
 | Estado           | Jogadores, Duelo, zonas, fases, posições, identificadores e validações estruturais                            |
 | Aleatoriedade    | Seed explícita, RNG reproduzível, serialização e Fisher–Yates determinístico                                  |
-| Cartas           | Definições readonly e instâncias mínimas tipadas, com IDs físico e lógico separados                           |
+| Cartas           | Definições e instâncias readonly, mais zonas ordenadas tipadas fora do campo                                  |
 | Preparação       | Embaralhamento dos dois Decks, distribuição das mãos e início do primeiro turno                               |
 | Fluxo            | Compra, Deck Out, Apoio, Principal 1 e processamento estrutural da Fase Final até o próximo turno             |
 | Restrições       | Sem compra nem batalha no primeiro turno, controle de Invocação-Normal, consulta e descarte do excesso da mão |
 | Integração       | Health check público e teste do carregamento do motor pela aplicação Laravel                                  |
 
-O escopo implementado ainda é estrutural. As instâncias referenciam definições
-tipadas, mas as zonas ainda armazenam seus IDs como strings. Não há catálogo,
-registro global de instâncias, efeitos executáveis, Correntes, ações legais,
-persistência ou cartas reais cadastradas.
+O escopo implementado ainda é estrutural. `OrderedCardZone` representa, de
+forma isolada, Deck Principal, mão, Cemitério, banidas e Deck Adicional com
+`CardInstance`; a ordem recebida é preservada, o índice zero continua sendo o
+topo do Deck Principal e IDs duplicados são rejeitados dentro da mesma coleção.
+As zonas de `DuelPlayerState` ainda armazenam IDs como strings e nenhuma
+operação existente foi migrada. Não há catálogo, registro global de instâncias,
+efeitos executáveis, Correntes, ações legais, persistência ou cartas reais
+cadastradas.
 
 `CardInstanceId` segue a semântica de whitespace ECMAScript já usada pelo
 domínio para rejeitar valores vazios. IDs válidos continuam preservados
@@ -262,11 +270,11 @@ O RNG foi projetado para repetibilidade do jogo, não para uso criptográfico.
 
 | Suíte atual   |  Testes | Assertions |
 | ------------- | ------: | ---------: |
-| `duel-engine` |     626 |      7.368 |
+| `duel-engine` |     668 |      7.552 |
 | API Laravel   |       2 |          4 |
-| **Total**     | **628** |  **7.372** |
+| **Total**     | **670** |  **7.556** |
 
-O motor possui **29 classes de teste** e **35 DataProviders**. O teste isolado
+O motor possui **30 classes de teste** e **38 DataProviders**. O teste isolado
 de paridade executa **4 testes e 193 assertions**, cobrindo RNG, embaralhamento,
 serialização e fluxo estrutural contra os vetores preservados da migração.
 
@@ -385,6 +393,7 @@ health check ou executar a suíte atual.
 - regras básicas, estados, fases, processamento estrutural da Fase Final e
   turnos;
 - modelos mínimos e imutáveis de definições e instâncias de cartas;
+- coleção ordenada e imutável de instâncias para zonas fora do campo;
 - RNG e embaralhamento determinísticos;
 - migração do backend e dos motores para PHP;
 - testes automatizados e ferramentas de qualidade.
@@ -431,7 +440,10 @@ marcos correspondentes, sem serem tratadas como tecnologias atuais.
 - não há efeitos executáveis, Correntes ou ações legais de cartas;
 - não há catálogo de cartas nem cartas reais cadastradas;
 - não há registro global de instâncias;
-- as instâncias ainda não estão integradas às zonas do Duelo;
+- as coleções tipadas ainda não estão integradas ao `DuelPlayerState` nem às
+  operações atuais;
+- não há movimentação entre zonas, compra ou descarte tipados integrados, nem
+  campo tipado;
 - o processamento da Fase Final não resolve efeitos, Correntes ou efeitos
   pendentes;
 - o início do próximo turno não processa automaticamente a Fase de Compra;
