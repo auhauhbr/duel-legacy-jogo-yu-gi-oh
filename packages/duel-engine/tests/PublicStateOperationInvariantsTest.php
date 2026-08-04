@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DuelLegacy\DuelEngine\Tests;
 
+use DuelLegacy\DuelEngine\Cards\CardLocation;
 use DuelLegacy\DuelEngine\Duels\DuelResultReason;
 use DuelLegacy\DuelEngine\Duels\DuelState;
 use DuelLegacy\DuelEngine\Duels\DuelStatus;
@@ -267,7 +268,7 @@ final class PublicStateOperationInvariantsTest extends TestCase
             'unknown_turn_order' => ['turnOrder' => ['player-1', 'unknown']],
             'monster_zones' => ['players' => [$players[0]->with(['monsterZones' => []]), $players[1]]],
             'spell_trap_zones' => ['players' => [$players[0], $players[1]->with(['spellTrapZones' => []])]],
-            'initial_hand' => ['players' => [$players[0]->with(['hand' => []]), $players[1]]],
+            'initial_hand' => ['players' => [TestFactory::withZoneIds($players[0], CardLocation::HAND, []), $players[1]]],
             default => throw new \LogicException("Mutação desconhecida: {$mutation}"),
         };
 
@@ -277,15 +278,28 @@ final class PublicStateOperationInvariantsTest extends TestCase
     private function withDuplicateCard(DuelState $state, string $area): DuelState
     {
         $players = $state->players;
-        $duplicate = $players[0]->mainDeck[0];
-        $change = match ($area) {
-            'mainDeck', 'hand', 'graveyard', 'banishedFaceUp', 'banishedFaceDown', 'extraDeckFaceDown', 'extraDeckFaceUp' => [$area => [$duplicate]],
-            'monsterZones' => ['monsterZones' => [$duplicate, null, null, null, null]],
-            'spellTrapZones' => ['spellTrapZones' => [$duplicate, null, null, null, null]],
-            'fieldZone' => ['fieldZone' => $duplicate],
-            default => throw new \LogicException("Área desconhecida: {$area}"),
+        $duplicate = $players[0]->cardZones->mainDeck->cards()[0]->id->value;
+        $location = match ($area) {
+            'mainDeck' => CardLocation::MAIN_DECK,
+            'hand' => CardLocation::HAND,
+            'graveyard' => CardLocation::GRAVEYARD,
+            'banishedFaceUp' => CardLocation::BANISHED_FACE_UP,
+            'banishedFaceDown' => CardLocation::BANISHED_FACE_DOWN,
+            'extraDeckFaceDown' => CardLocation::EXTRA_DECK_FACE_DOWN,
+            'extraDeckFaceUp' => CardLocation::EXTRA_DECK_FACE_UP,
+            default => null,
         };
-        $players[1] = $players[1]->with($change);
+        if ($location !== null) {
+            $players[1] = TestFactory::withZoneIds($players[1], $location, [$duplicate]);
+        } else {
+            $change = match ($area) {
+                'monsterZones' => ['monsterZones' => [$duplicate, null, null, null, null]],
+                'spellTrapZones' => ['spellTrapZones' => [$duplicate, null, null, null, null]],
+                'fieldZone' => ['fieldZone' => $duplicate],
+                default => throw new \LogicException("Área desconhecida: {$area}"),
+            };
+            $players[1] = $players[1]->with($change);
+        }
 
         return $state->with(['players' => $players]);
     }

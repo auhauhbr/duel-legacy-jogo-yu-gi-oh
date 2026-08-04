@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DuelLegacy\DuelEngine\Tests;
 
+use DuelLegacy\DuelEngine\Cards\CardLocation;
 use DuelLegacy\DuelEngine\Duels\DuelStatus;
 use DuelLegacy\DuelEngine\Tests\Support\TestFactory;
 use PHPUnit\Framework\TestCase;
@@ -24,8 +25,8 @@ final class PrepareInitialDuelStateTest extends TestCase
         self::assertNull($prepared->currentPlayerId);
         self::assertSame(18, $prepared->rngState?->calls);
         foreach ($prepared->players as $player) {
-            self::assertCount(5, $player->hand);
-            self::assertCount(5, $player->mainDeck);
+            self::assertSame(5, $player->cardZones->hand->count());
+            self::assertSame(5, $player->cardZones->mainDeck->count());
         }
         self::assertSame($snapshot, $initial->toArray());
         self::assertSame($prepared->toArray(), prepareInitialDuelState($initial, gxLegacyProfile(), 'prepare 🔥')->toArray());
@@ -55,7 +56,9 @@ final class PrepareInitialDuelStateTest extends TestCase
     {
         $initial = TestFactory::initialDuel();
         $players = $initial->players;
-        $players[0] = $players[0]->with(['mainDeck' => array_slice($players[0]->mainDeck, 0, 4)]);
+        $players[0] = $players[0]->with(['cardZones' => $players[0]->cardZones->withZone(
+            TestFactory::zone(CardLocation::MAIN_DECK, array_slice($players[0]->cardZones->mainDeck->cards(), 0, 4)),
+        )]);
         try {
             prepareInitialDuelState($initial->with(['players' => $players]), gxLegacyProfile(), 'seed');
             self::fail();
@@ -63,7 +66,7 @@ final class PrepareInitialDuelStateTest extends TestCase
             self::assertSame('Jogador sem cartas suficientes para a mão inicial.', $exception->getMessage());
         }
         $players = $initial->players;
-        $players[1] = $players[1]->with(['hand' => [$players[0]->mainDeck[0]]]);
+        $players[1] = TestFactory::withZoneIds($players[1], CardLocation::HAND, [$players[0]->cardZones->mainDeck->cards()[0]->id->value]);
         $this->expectExceptionMessage('IDs de instância de carta devem ser únicos no Duelo.');
         prepareInitialDuelState($initial->with(['players' => $players]), gxLegacyProfile(), 'seed');
     }

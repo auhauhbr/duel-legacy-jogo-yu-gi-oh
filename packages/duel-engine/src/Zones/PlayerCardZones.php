@@ -61,6 +61,24 @@ final readonly class PlayerCardZones
         };
     }
 
+    public function withZone(OrderedCardZone $zone): self
+    {
+        $current = $this->get($zone->location);
+        if ($current === $zone) {
+            return $this;
+        }
+
+        return new self(
+            mainDeck: $zone->location === CardLocation::MAIN_DECK ? $zone : $this->mainDeck,
+            hand: $zone->location === CardLocation::HAND ? $zone : $this->hand,
+            graveyard: $zone->location === CardLocation::GRAVEYARD ? $zone : $this->graveyard,
+            banishedFaceUp: $zone->location === CardLocation::BANISHED_FACE_UP ? $zone : $this->banishedFaceUp,
+            banishedFaceDown: $zone->location === CardLocation::BANISHED_FACE_DOWN ? $zone : $this->banishedFaceDown,
+            extraDeckFaceDown: $zone->location === CardLocation::EXTRA_DECK_FACE_DOWN ? $zone : $this->extraDeckFaceDown,
+            extraDeckFaceUp: $zone->location === CardLocation::EXTRA_DECK_FACE_UP ? $zone : $this->extraDeckFaceUp,
+        );
+    }
+
     public function contains(CardInstanceId $id): bool
     {
         return $this->find($id) !== null;

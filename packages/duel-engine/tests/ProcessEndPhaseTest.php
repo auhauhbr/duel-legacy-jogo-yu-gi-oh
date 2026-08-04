@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DuelLegacy\DuelEngine\Tests;
 
 use DomainException;
+use DuelLegacy\DuelEngine\Cards\CardLocation;
 use DuelLegacy\DuelEngine\Duels\DuelState;
 use DuelLegacy\DuelEngine\Duels\DuelStatus;
 use DuelLegacy\DuelEngine\Engine;
@@ -57,9 +58,7 @@ final class ProcessEndPhaseTest extends TestCase
         self::assertNotSame($duel->rngState, $result->rngState);
 
         foreach ([0, 1] as $index) {
-            self::assertSame($duel->players[$index]->mainDeck, $result->players[$index]->mainDeck);
-            self::assertSame($duel->players[$index]->hand, $result->players[$index]->hand);
-            self::assertSame($duel->players[$index]->graveyard, $result->players[$index]->graveyard);
+            self::assertSame($duel->players[$index]->cardZones, $result->players[$index]->cardZones);
             self::assertSame(
                 $duel->players[$index]->playerId === $nextPlayerId ? 0 : $duel->players[$index]->normalSummonsUsed,
                 $result->players[$index]->normalSummonsUsed,
@@ -130,12 +129,10 @@ final class ProcessEndPhaseTest extends TestCase
 
         self::assertSame($snapshot, $duel->toArray());
         self::assertSame($selectionSnapshot, $selection);
-        self::assertSame($expectedHand, $result->players[$currentPlayerIndex]->hand);
-        self::assertSame($expectedGraveyard, $result->players[$currentPlayerIndex]->graveyard);
-        self::assertSame($duel->players[$currentPlayerIndex]->mainDeck, $result->players[$currentPlayerIndex]->mainDeck);
-        self::assertSame($duel->players[$nextPlayerIndex]->mainDeck, $result->players[$nextPlayerIndex]->mainDeck);
-        self::assertSame($duel->players[$nextPlayerIndex]->hand, $result->players[$nextPlayerIndex]->hand);
-        self::assertSame($duel->players[$nextPlayerIndex]->graveyard, $result->players[$nextPlayerIndex]->graveyard);
+        self::assertSame($expectedHand, TestFactory::ids($result->players[$currentPlayerIndex]->cardZones->hand));
+        self::assertSame($expectedGraveyard, TestFactory::ids($result->players[$currentPlayerIndex]->cardZones->graveyard));
+        self::assertSame($duel->players[$currentPlayerIndex]->cardZones->mainDeck, $result->players[$currentPlayerIndex]->cardZones->mainDeck);
+        self::assertSame($duel->players[$nextPlayerIndex]->cardZones, $result->players[$nextPlayerIndex]->cardZones);
         self::assertSame(0, $result->players[$nextPlayerIndex]->normalSummonsUsed);
         self::assertSame($duel->players[$currentPlayerIndex]->normalSummonsUsed, $result->players[$currentPlayerIndex]->normalSummonsUsed);
         self::assertSame(DuelPhase::DRAW, $result->phase);
@@ -284,8 +281,7 @@ final class ProcessEndPhaseTest extends TestCase
         $nextPlayer = $result->players[1];
 
         self::assertSame(DuelPhase::DRAW, $result->phase);
-        self::assertSame($duel->players[1]->mainDeck, $nextPlayer->mainDeck);
-        self::assertSame($duel->players[1]->hand, $nextPlayer->hand);
+        self::assertSame($duel->players[1]->cardZones, $nextPlayer->cardZones);
 
         try {
             processEndPhase($result, gxLegacyProfile(), []);
@@ -305,10 +301,16 @@ final class ProcessEndPhaseTest extends TestCase
         $duel = TestFactory::endDuel($turnNumber);
         $players = $duel->players;
         $currentPlayerIndex = $turnNumber % 2 === 1 ? 0 : 1;
-        $players[$currentPlayerIndex] = $players[$currentPlayerIndex]->with([
-            ...$currentPlayerChanges,
-            'hand' => [...$hand],
-        ]);
+        $player = TestFactory::withZoneIds($players[$currentPlayerIndex], CardLocation::HAND, $hand);
+        if (isset($currentPlayerChanges['graveyard']) && is_array($currentPlayerChanges['graveyard'])) {
+            $graveyard = $currentPlayerChanges['graveyard'];
+            if (! array_is_list($graveyard) || array_filter($graveyard, static fn (mixed $id): bool => ! is_string($id)) !== []) {
+                throw new \LogicException('Fixture de Cemitério inválida.');
+            }
+            $player = TestFactory::withZoneIds($player, CardLocation::GRAVEYARD, $graveyard);
+            unset($currentPlayerChanges['graveyard']);
+        }
+        $players[$currentPlayerIndex] = $player->with($currentPlayerChanges);
 
         return $duel->with(['players' => $players]);
     }
@@ -330,8 +332,7 @@ final class ProcessEndPhaseTest extends TestCase
         $turnNumber = $duel->turnNumber;
         $phase = $duel->phase;
         $rng = $duel->rngState?->toArray();
-        $hands = array_map(static fn ($player): array => $player->hand, $duel->players);
-        $graveyards = array_map(static fn ($player): array => $player->graveyard, $duel->players);
+        $cardZones = array_map(static fn ($player) => $player->cardZones, $duel->players);
 
         try {
             processEndPhase($duel, $profile, $selection);
@@ -344,8 +345,7 @@ final class ProcessEndPhaseTest extends TestCase
             self::assertSame($currentPlayerId, $duel->currentPlayerId);
             self::assertSame($turnNumber, $duel->turnNumber);
             self::assertSame($phase, $duel->phase);
-            self::assertSame($hands, array_map(static fn ($player): array => $player->hand, $duel->players));
-            self::assertSame($graveyards, array_map(static fn ($player): array => $player->graveyard, $duel->players));
+            self::assertSame($cardZones, array_map(static fn ($player) => $player->cardZones, $duel->players));
             self::assertSame($rng, $duel->rngState?->toArray());
         }
     }

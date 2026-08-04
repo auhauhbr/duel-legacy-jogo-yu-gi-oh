@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DuelLegacy\DuelEngine\Tests;
 
+use DuelLegacy\DuelEngine\Cards\CardLocation;
 use DuelLegacy\DuelEngine\Phases\DuelPhase;
 use DuelLegacy\DuelEngine\Tests\Support\TestFactory;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -29,11 +30,11 @@ final class GetRequiredEndPhaseDiscardCountTest extends TestCase
     {
         $duel = TestFactory::endDuel();
         $players = $duel->players;
-        $players[0] = $players[0]->with(['hand' => array_map(static fn (int $index): string => "hand-{$index}", range(1, $handSize))]);
+        $players[0] = TestFactory::withZoneIds($players[0], CardLocation::HAND, array_map(static fn (int $index): string => "hand-{$index}", range(1, $handSize)));
         if ($handSize === 0) {
-            $players[0] = $players[0]->with(['hand' => []]);
+            $players[0] = TestFactory::withZoneIds($players[0], CardLocation::HAND, []);
         }
-        $players[1] = $players[1]->with(['hand' => range('a', 'z')]);
+        $players[1] = TestFactory::withZoneIds($players[1], CardLocation::HAND, range('a', 'z'));
         $duel = $duel->with(['players' => $players]);
         $snapshot = $duel->toArray();
         self::assertSame($expected, getRequiredEndPhaseDiscardCount($duel, gxLegacyProfile()));
@@ -45,7 +46,7 @@ final class GetRequiredEndPhaseDiscardCountTest extends TestCase
     {
         $duel = TestFactory::endDuel(2);
         $players = $duel->players;
-        $players[1] = $players[1]->with(['hand' => range('a', 'i')]);
+        $players[1] = TestFactory::withZoneIds($players[1], CardLocation::HAND, range('a', 'i'));
         self::assertSame(3, getRequiredEndPhaseDiscardCount($duel->with(['players' => $players]), gxLegacyProfile()));
     }
 

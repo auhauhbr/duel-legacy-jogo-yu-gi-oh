@@ -126,9 +126,8 @@ pela Konami.
 - agregado imutável das sete zonas tipadas fora do campo de um jogador, com
   validação da localização de cada papel, unicidade de `CardInstanceId` entre
   zonas, consultas globais de leitura e serialização determinística.
-- projeção tipada e somente de leitura de um `DuelPlayerState` legado para
-  `PlayerCardZones`, resolvendo explicitamente os IDs pelas `CardInstance`
-  fornecidas pelo chamador e preservando a ordem das sete zonas.
+- `PlayerCardZones` como fonte autoritativa das sete zonas fora do campo em
+  `DuelPlayerState`, sem listas paralelas de IDs;
 - primitivo imutável de movimentação entre zonas tipadas fora do campo, com
   origem, destino, `CardInstanceId` e índice de destino explícitos, preservação
   da ordem e das referências imutáveis, compartilhamento estrutural das cinco
@@ -167,30 +166,27 @@ pela Konami.
 
 ## Funcionalidades implementadas
 
-| Área             | Entregas atuais                                                                                                        |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Fundação         | Monorepo, contratos OpenAPI, API Laravel e pacotes Composer separados                                                  |
-| Perfil de regras | `GX_LEGACY`, 8.000 LP, mão inicial de 5 cartas, limites de Deck e zonas                                                |
-| Estado           | Jogadores, Duelo, zonas, fases, posições, identificadores e validações estruturais                                     |
-| Aleatoriedade    | Seed explícita, RNG reproduzível, serialização e Fisher–Yates determinístico                                           |
-| Cartas           | Definições e instâncias readonly, zonas tipadas, agregado, projeção legada, movimentação, compra e descartes imutáveis |
-| Preparação       | Embaralhamento dos dois Decks, distribuição das mãos e início do primeiro turno                                        |
-| Fluxo            | Compra, Deck Out, Apoio, Principal 1 e processamento estrutural da Fase Final até o próximo turno                      |
-| Restrições       | Sem compra nem batalha no primeiro turno, controle de Invocação-Normal, consulta e descarte do excesso da mão          |
-| Integração       | Health check público e teste do carregamento do motor pela aplicação Laravel                                           |
+| Área             | Entregas atuais                                                                                               |
+| ---------------- | ------------------------------------------------------------------------------------------------------------- |
+| Fundação         | Monorepo, contratos OpenAPI, API Laravel e pacotes Composer separados                                         |
+| Perfil de regras | `GX_LEGACY`, 8.000 LP, mão inicial de 5 cartas, limites de Deck e zonas                                       |
+| Estado           | Jogadores, Duelo, zonas, fases, posições, identificadores e validações estruturais                            |
+| Aleatoriedade    | Seed explícita, RNG reproduzível, serialização e Fisher–Yates determinístico                                  |
+| Cartas           | Definições e instâncias readonly, zonas tipadas autoritativas, movimentação, compra e descartes imutáveis     |
+| Preparação       | Embaralhamento dos dois Decks, distribuição das mãos e início do primeiro turno                               |
+| Fluxo            | Compra, Deck Out, Apoio, Principal 1 e processamento estrutural da Fase Final até o próximo turno             |
+| Restrições       | Sem compra nem batalha no primeiro turno, controle de Invocação-Normal, consulta e descarte do excesso da mão |
+| Integração       | Health check público e teste do carregamento do motor pela aplicação Laravel                                  |
 
 O escopo implementado ainda é estrutural. `OrderedCardZone` representa Deck
 Principal, mão, Cemitério, banidas e Deck Adicional com `CardInstance`; a ordem
 recebida é preservada, o índice zero continua sendo o topo do Deck Principal e
 IDs duplicados são rejeitados dentro da mesma coleção. `PlayerCardZones` agrega
 as sete zonas fora do campo, exige a localização correspondente em cada papel e
-rejeita IDs repetidos entre elas. Também oferece consultas globais somente de
-leitura e serialização determinística. `PlayerCardZonesProjector` cria um
-snapshot tipado a partir de um `DuelPlayerState` e de uma lista explícita de
-`CardInstance`, resolve IDs pelo valor exato, aceita instâncias extras e mapeia
-diretamente as coleções legadas já separadas por orientação. A projeção não
-altera nem fica armazenada no estado legado, e snapshots existentes não são
-sincronizados com mudanças posteriores. `PlayerCardZonesMover` movimenta uma
+rejeita IDs repetidos entre elas. O agregado é a única fonte autoritativa das
+sete zonas fora do campo em `DuelPlayerState`; a serialização pública deriva
+listas de IDs na ordem histórica, sem expor `CardDefinition`. O projector
+transitório foi removido. `PlayerCardZonesMover` movimenta uma
 única instância entre duas dessas zonas, exige origem e destino diferentes e
 insere exatamente no índice informado. Somente origem e destino são
 reconstruídos; as outras cinco zonas, a `CardInstance`, sua `CardDefinition` e
@@ -205,28 +201,32 @@ explícito, exige sua presença exata em `HAND` e o anexa ao final de
 restantes da mão e das cartas anteriores do Cemitério é preservada; somente
 essas duas zonas são reconstruídas, e o agregado original permanece
 inalterado. Um ID ausente na mão falha deterministicamente e não é procurado em
-outras zonas. As zonas de `DuelPlayerState` ainda armazenam IDs como strings e
-nenhuma operação existente foi migrada. `PlayerCardZonesHandExcessDiscarder`
+outras zonas. `PlayerCardZonesHandExcessDiscarder`
 reduz a mão tipada ao limite máximo explícito usando uma seleção explícita de
 `CardInstanceId`: exige exatamente o excesso, rejeita IDs duplicados ou
 ausentes de `HAND` e percorre a mão original para definir a ordem de anexação
 ao Cemitério, independentemente da ordem da seleção. A operação reutiliza
-`PlayerCardZonesDiscarder` para cada carta, preserva o agregado original e
-retorna exatamente a mesma instância quando não existe excesso. Não há
-integração da movimentação, da compra ou dos descartes tipados ao estado
-legado, ao `DuelPlayerState`, a `processEndPhase` ou à Fase Final; também não há
-sincronização, projeção inversa, escolha automática, descarte aleatório, custo
-de efeito, efeitos de substituição, validação de fase ou jogador ativo, avanço
-automático do turno, movimentação para ou a partir do campo, entre jogadores
-ou dentro da mesma zona, nem embaralhamento tipado integrado. Também não há
+`PlayerCardZonesDiscarder` para cada carta, preservando o agregado original e
+retornando exatamente a mesma instância quando não existe excesso. A criação
+do jogador recebe `CardInstance`; preparação e embaralhamento preservam essas
+instâncias e definições, e compra, Fase de Compra e descarte da Fase Final usam
+as operações tipadas. Objetos imutáveis não alterados são compartilhados
+estruturalmente. Não há escolha automática, descarte aleatório, custo de
+efeito, efeitos de substituição ou movimentação para ou a partir do campo,
+entre jogadores ou dentro da mesma zona. Também não há
 semânticas de `banish`, `destroy` ou `summon`, catálogo, registro global de
 instâncias, efeitos executáveis, Correntes, ações legais, persistência ou cartas
 reais cadastradas.
 
+As fixtures históricas da implementação TypeScript permanecem byte a byte
+inalteradas e compatíveis com a serialização pública por IDs. As zonas de campo
+(`monsterZones`, `spellTrapZones` e `fieldZone`) permanecem temporariamente no
+formato legado; não existe uma segunda representação das sete zonas fora do
+campo.
+
 `CardInstanceId` segue a semântica de whitespace ECMAScript já usada pelo
 domínio para rejeitar valores vazios. IDs válidos continuam preservados
-exatamente, sem `trim` ou normalização, e a migração das zonas para
-`CardInstance` permanece pendente.
+exatamente, sem `trim` ou normalização.
 
 ## Arquitetura
 
@@ -329,11 +329,11 @@ O RNG foi projetado para repetibilidade do jogo, não para uso criptográfico.
 
 | Suíte atual   |  Testes | Assertions |
 | ------------- | ------: | ---------: |
-| `duel-engine` |     858 |      9.728 |
+| `duel-engine` |     860 |      9.650 |
 | API Laravel   |       2 |          4 |
-| **Total**     | **860** |  **9.732** |
+| **Total**     | **862** |  **9.654** |
 
-O motor possui **36 classes de teste** e **67 DataProviders**. O teste isolado
+O motor possui **36 classes de teste** e **68 DataProviders**. O teste isolado
 de paridade executa **4 testes e 193 assertions**, cobrindo RNG, embaralhamento,
 serialização e fluxo estrutural contra os vetores preservados da migração.
 
@@ -454,7 +454,7 @@ health check ou executar a suíte atual.
 - modelos mínimos e imutáveis de definições e instâncias de cartas;
 - coleção ordenada e imutável de instâncias para zonas fora do campo;
 - agregado imutável das sete zonas ordenadas fora do campo;
-- projeção tipada e somente de leitura das zonas legadas fora do campo;
+- integração autoritativa das sete zonas tipadas fora do campo ao estado;
 - movimentação estrutural imutável entre zonas tipadas fora do campo;
 - compra semântica, tipada e imutável do topo do Deck Principal para o final
   da mão;
@@ -468,7 +468,7 @@ health check ou executar a suíte atual.
 
 ### Próximas etapas
 
-- integração incremental das instâncias às zonas do Duelo;
+- zonas de campo tipadas e operações específicas de campo;
 - catálogo de cartas;
 - ações legais;
 - comandos e eventos;
@@ -508,18 +508,12 @@ marcos correspondentes, sem serem tratadas como tecnologias atuais.
 - não há efeitos executáveis, Correntes ou ações legais de cartas;
 - não há catálogo de cartas nem cartas reais cadastradas;
 - não há registro global de instâncias;
-- `PlayerCardZones` não fica armazenado no `DuelPlayerState`, e as operações
-  atuais continuam usando as coleções legadas de IDs;
-- a movimentação, a compra e os descartes tipados não estão integrados ao
-  `DuelPlayerState` nem ao estado legado; a compra não está integrada à Fase de
-  Compra, e nenhum descarte tipado está integrado à Fase Final ou a
-  `processEndPhase`. Não há sincronização, projeção inversa, resolução tipada de
-  Deck Out, determinação de vencedor, validação de fase ou jogador ativo,
-  compra de várias cartas, mão inicial tipada, efeitos de compra, limite de mão
-  durante a compra, escolha automática, descarte aleatório, custo de efeito,
-  efeitos de substituição, avanço automático do turno, embaralhamento tipado
-  integrado, movimentação para zonas de campo, entre jogadores ou dentro da
-  mesma zona, nem semânticas de banimento, destruição ou Invocação;
+- `monsterZones`, `spellTrapZones` e `fieldZone` continuam legadas como IDs;
+- ainda não há zonas de campo tipadas nem movimentação campo ↔ zonas fora do
+  campo;
+- não há escolha automática, descarte aleatório, custo de efeito, efeitos de
+  substituição, movimentação entre jogadores ou dentro da mesma zona, nem
+  semânticas de banimento, destruição ou Invocação;
 - o processamento da Fase Final não resolve efeitos, Correntes ou efeitos
   pendentes;
 - o início do próximo turno não processa automaticamente a Fase de Compra;

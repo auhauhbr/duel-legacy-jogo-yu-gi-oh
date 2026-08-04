@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DuelLegacy\DuelEngine;
 
+use DuelLegacy\DuelEngine\Cards\CardInstance;
 use DuelLegacy\DuelEngine\Duels\DuelState;
 use DuelLegacy\DuelEngine\Phases\DuelPhase;
 use DuelLegacy\DuelEngine\Players\DrawCardsResult;
@@ -31,8 +32,8 @@ function validateRulesProfile(RulesProfile $profile): RulesProfileValidationResu
 }
 
 /**
- * @param  list<string>  $mainDeck
- * @param  list<string>  $extraDeck
+ * @param  list<CardInstance>  $mainDeck
+ * @param  list<CardInstance>  $extraDeck
  */
 function createInitialPlayerState(RulesProfile $profile, string $playerId, array $mainDeck, array $extraDeck): DuelPlayerState
 {

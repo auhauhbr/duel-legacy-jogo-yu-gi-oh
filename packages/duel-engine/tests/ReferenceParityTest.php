@@ -115,8 +115,8 @@ final class ReferenceParityTest extends TestCase
                     'playerId não pode ser vazio.',
                 );
                 $this->assertInvalidArgumentMessage(
-                    static fn (): mixed => createInitialPlayerState(TestFactory::profile(), 'player', [$value], []),
-                    'IDs de instância de carta não podem ser vazios.',
+                    static fn (): mixed => TestFactory::card($value),
+                    'O identificador não pode ser vazio.',
                 );
                 $players = [TestFactory::player('p1'), TestFactory::player('p2')];
                 foreach ([0, 1, 2] as $metadataIndex) {
@@ -141,10 +141,10 @@ final class ReferenceParityTest extends TestCase
             $profile = TestFactory::profile(['id' => $value]);
             self::assertTrue(validateRulesProfile($profile)->valid);
             self::assertSame($value, $profile->id);
-            $player = createInitialPlayerState($profile, $value, ["card-{$value}"], []);
+            $player = createInitialPlayerState($profile, $value, TestFactory::cards(["card-{$value}"]), []);
             self::assertSame($value, $player->playerId);
-            self::assertSame("card-{$value}", $player->mainDeck[0]);
-            $other = createInitialPlayerState($profile, 'other', ['other-card'], []);
+            self::assertSame("card-{$value}", $player->cardZones->mainDeck->cards()[0]->id->value);
+            $other = createInitialPlayerState($profile, 'other', TestFactory::cards(['other-card']), []);
             $duel = createInitialDuelState($value, $profile, $value, $value, [$player, $other], $value);
             self::assertSame([$value, $value, $value], [$duel->duelId, $duel->engineVersion, $duel->cardPoolVersion]);
         }
@@ -156,8 +156,8 @@ final class ReferenceParityTest extends TestCase
         $player = static fn (string $id) => createInitialPlayerState(
             $profile,
             $id,
-            array_map(static fn (int $index): string => "{$id}-main-{$index}", range(1, 40)),
-            ["{$id}-extra-1", "{$id}-extra-2"],
+            TestFactory::cards(array_map(static fn (int $index): string => "{$id}-main-{$index}", range(1, 40))),
+            TestFactory::cards(["{$id}-extra-1", "{$id}-extra-2"]),
         );
         $states = [];
         $states['initial'] = createInitialDuelState('duel-reference', $profile, 'engine-reference', 'pool-reference', [$player('player-1'), $player('player-2')], 'player-2');

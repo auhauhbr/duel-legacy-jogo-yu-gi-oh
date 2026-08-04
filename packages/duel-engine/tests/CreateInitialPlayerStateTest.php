@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DuelLegacy\DuelEngine\Tests;
 
+use DuelLegacy\DuelEngine\Cards\CardInstance;
 use DuelLegacy\DuelEngine\Tests\Support\TestFactory;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -16,15 +17,15 @@ final class CreateInitialPlayerStateTest extends TestCase
 {
     public function test_creates_complete_initial_state(): void
     {
-        $main = ['main-1', 'main-2'];
-        $extra = ['extra-1'];
+        $main = TestFactory::cards(['main-1', 'main-2']);
+        $extra = TestFactory::cards(['extra-1']);
         $state = createInitialPlayerState(gxLegacyProfile(), 'player-1', $main, $extra);
         self::assertSame('player-1', $state->playerId);
         self::assertSame(8000, $state->lifePoints);
-        self::assertSame($main, $state->mainDeck);
-        self::assertSame($extra, $state->extraDeckFaceDown);
-        self::assertSame([], $state->hand);
-        self::assertSame([], $state->graveyard);
+        self::assertSame($main, $state->cardZones->mainDeck->cards());
+        self::assertSame($extra, $state->cardZones->extraDeckFaceDown->cards());
+        self::assertTrue($state->cardZones->hand->isEmpty());
+        self::assertTrue($state->cardZones->graveyard->isEmpty());
         self::assertSame([null, null, null, null, null], $state->monsterZones);
         self::assertSame([null, null, null, null, null], $state->spellTrapZones);
         self::assertNull($state->fieldZone);
@@ -32,18 +33,18 @@ final class CreateInitialPlayerStateTest extends TestCase
         self::assertSame(1, $state->normalSummonLimit);
     }
 
-    /** @return iterable<array{string, list<string>, list<string>, string}> */
+    /** @return iterable<array{string, list<CardInstance>, list<CardInstance>, string}> */
     public static function invalidInputs(): iterable
     {
         yield [' ', [], [], 'playerId não pode ser vazio.'];
-        yield ['p1', [''], [], 'IDs de instância de carta não podem ser vazios.'];
-        yield ['p1', ['x', 'x'], [], 'IDs de instância de carta devem ser únicos.'];
-        yield ['p1', ['x'], ['x'], 'IDs de instância de carta devem ser únicos.'];
+        $duplicate = TestFactory::card('x');
+        yield ['p1', [$duplicate, $duplicate], [], 'IDs de instância de carta devem ser únicos.'];
+        yield ['p1', [$duplicate], [$duplicate], 'IDs de instância de carta devem ser únicos.'];
     }
 
     /**
-     * @param  list<string>  $main
-     * @param  list<string>  $extra
+     * @param  list<CardInstance>  $main
+     * @param  list<CardInstance>  $extra
      */
     #[DataProvider('invalidInputs')]
     public function test_rejects_invalid_inputs(string $playerId, array $main, array $extra, string $message): void
@@ -60,7 +61,7 @@ final class CreateInitialPlayerStateTest extends TestCase
                 gxLegacyProfile(),
                 'p1',
                 [],
-                array_map(static fn (int $index): string => "extra-{$index}", range(1, 16)),
+                TestFactory::cards(array_map(static fn (int $index): string => "extra-{$index}", range(1, 16))),
             );
             self::fail();
         } catch (InvalidArgumentException $exception) {
@@ -75,11 +76,29 @@ final class CreateInitialPlayerStateTest extends TestCase
         $state = TestFactory::player('p1');
         $snapshot = $state->toArray();
         try {
-            $property = new \ReflectionProperty($state, 'mainDeck');
-            $property->setValue($state, ['illegal']);
+            $property = new \ReflectionProperty($state, 'cardZones');
+            $property->setValue($state, TestFactory::playerCardZones());
             self::fail('Readonly array was mutated.');
         } catch (\Error) {
             self::assertSame($snapshot, $state->toArray());
+        }
+    }
+
+    public function test_rejects_non_lists_and_non_card_instances(): void
+    {
+        foreach ([
+            [['key' => TestFactory::card('A')], [], 'mainDeck deve ser uma lista.'],
+            [[], ['key' => TestFactory::card('A')], 'extraDeck deve ser uma lista.'],
+            [['A'], [], 'mainDeck deve conter apenas CardInstance.'],
+            [[], ['A'], 'extraDeck deve conter apenas CardInstance.'],
+        ] as [$main, $extra, $message]) {
+            try {
+                $function = new \ReflectionFunction('DuelLegacy\\DuelEngine\\createInitialPlayerState');
+                $function->invoke(gxLegacyProfile(), 'p1', $main, $extra);
+                self::fail();
+            } catch (InvalidArgumentException $exception) {
+                self::assertSame($message, $exception->getMessage());
+            }
         }
     }
 }
