@@ -159,7 +159,7 @@ final class CardInstanceTest extends TestCase
 
         self::assertInstanceOf(
             CardInstance::class,
-            new CardInstance(new CardInstanceId(" \t\n"), self::spellDefinition()),
+            new CardInstance(new CardInstanceId("\u{00A0}\u{2003}\u{FEFF}"), self::spellDefinition()),
         );
     }
 
