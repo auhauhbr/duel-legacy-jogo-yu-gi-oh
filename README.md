@@ -123,6 +123,9 @@ pela Konami.
   campo, com preservação da ordem e rejeição de IDs duplicados na mesma zona;
 - suporte estrutural isolado para Deck Principal, mão, Cemitério, cartas
   banidas e Deck Adicional.
+- agregado imutável das sete zonas tipadas fora do campo de um jogador, com
+  validação da localização de cada papel, unicidade de `CardInstanceId` entre
+  zonas, consultas globais de leitura e serialização determinística.
 
 ### 🚧 Em desenvolvimento
 
@@ -149,20 +152,24 @@ pela Konami.
 | Perfil de regras | `GX_LEGACY`, 8.000 LP, mão inicial de 5 cartas, limites de Deck e zonas                                       |
 | Estado           | Jogadores, Duelo, zonas, fases, posições, identificadores e validações estruturais                            |
 | Aleatoriedade    | Seed explícita, RNG reproduzível, serialização e Fisher–Yates determinístico                                  |
-| Cartas           | Definições e instâncias readonly, mais zonas ordenadas tipadas fora do campo                                  |
+| Cartas           | Definições e instâncias readonly, zonas ordenadas tipadas e agregado imutável das zonas fora do campo         |
 | Preparação       | Embaralhamento dos dois Decks, distribuição das mãos e início do primeiro turno                               |
 | Fluxo            | Compra, Deck Out, Apoio, Principal 1 e processamento estrutural da Fase Final até o próximo turno             |
 | Restrições       | Sem compra nem batalha no primeiro turno, controle de Invocação-Normal, consulta e descarte do excesso da mão |
 | Integração       | Health check público e teste do carregamento do motor pela aplicação Laravel                                  |
 
-O escopo implementado ainda é estrutural. `OrderedCardZone` representa, de
-forma isolada, Deck Principal, mão, Cemitério, banidas e Deck Adicional com
-`CardInstance`; a ordem recebida é preservada, o índice zero continua sendo o
-topo do Deck Principal e IDs duplicados são rejeitados dentro da mesma coleção.
-As zonas de `DuelPlayerState` ainda armazenam IDs como strings e nenhuma
-operação existente foi migrada. Não há catálogo, registro global de instâncias,
-efeitos executáveis, Correntes, ações legais, persistência ou cartas reais
-cadastradas.
+O escopo implementado ainda é estrutural. `OrderedCardZone` representa Deck
+Principal, mão, Cemitério, banidas e Deck Adicional com `CardInstance`; a ordem
+recebida é preservada, o índice zero continua sendo o topo do Deck Principal e
+IDs duplicados são rejeitados dentro da mesma coleção. `PlayerCardZones` agrega
+as sete zonas fora do campo, exige a localização correspondente em cada papel e
+rejeita IDs repetidos entre elas. Também oferece consultas globais somente de
+leitura e serialização determinística. As zonas de `DuelPlayerState` ainda
+armazenam IDs como strings e nenhuma operação existente foi migrada. Não há
+integração com esse estado, movimentação entre zonas, compra, descarte ou
+embaralhamento tipados, zonas de campo tipadas, catálogo, registro global de
+instâncias, efeitos executáveis, Correntes, ações legais, persistência ou cartas
+reais cadastradas.
 
 `CardInstanceId` segue a semântica de whitespace ECMAScript já usada pelo
 domínio para rejeitar valores vazios. IDs válidos continuam preservados
@@ -270,11 +277,11 @@ O RNG foi projetado para repetibilidade do jogo, não para uso criptográfico.
 
 | Suíte atual   |  Testes | Assertions |
 | ------------- | ------: | ---------: |
-| `duel-engine` |     668 |      7.552 |
+| `duel-engine` |     713 |      7.715 |
 | API Laravel   |       2 |          4 |
-| **Total**     | **670** |  **7.556** |
+| **Total**     | **715** |  **7.719** |
 
-O motor possui **30 classes de teste** e **38 DataProviders**. O teste isolado
+O motor possui **31 classes de teste** e **42 DataProviders**. O teste isolado
 de paridade executa **4 testes e 193 assertions**, cobrindo RNG, embaralhamento,
 serialização e fluxo estrutural contra os vetores preservados da migração.
 
@@ -394,6 +401,7 @@ health check ou executar a suíte atual.
   turnos;
 - modelos mínimos e imutáveis de definições e instâncias de cartas;
 - coleção ordenada e imutável de instâncias para zonas fora do campo;
+- agregado imutável das sete zonas ordenadas fora do campo;
 - RNG e embaralhamento determinísticos;
 - migração do backend e dos motores para PHP;
 - testes automatizados e ferramentas de qualidade.
@@ -442,8 +450,8 @@ marcos correspondentes, sem serem tratadas como tecnologias atuais.
 - não há registro global de instâncias;
 - as coleções tipadas ainda não estão integradas ao `DuelPlayerState` nem às
   operações atuais;
-- não há movimentação entre zonas, compra ou descarte tipados integrados, nem
-  campo tipado;
+- não há migração do estado atual, movimentação entre zonas, compra, descarte
+  ou embaralhamento tipados integrados, nem campo tipado;
 - o processamento da Fase Final não resolve efeitos, Correntes ou efeitos
   pendentes;
 - o início do próximo turno não processa automaticamente a Fase de Compra;
