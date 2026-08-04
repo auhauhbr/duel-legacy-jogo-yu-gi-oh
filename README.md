@@ -156,6 +156,11 @@ tipadas, mas as zonas ainda armazenam seus IDs como strings. Não há catálogo,
 registro global de instâncias, efeitos executáveis, Correntes, ações legais,
 persistência ou cartas reais cadastradas.
 
+`CardInstanceId` segue a semântica de whitespace ECMAScript já usada pelo
+domínio para rejeitar valores vazios. IDs válidos continuam preservados
+exatamente, sem `trim` ou normalização, e a migração das zonas para
+`CardInstance` permanece pendente.
+
 ## Arquitetura
 
 ```mermaid
@@ -257,11 +262,11 @@ O RNG foi projetado para repetibilidade do jogo, não para uso criptográfico.
 
 | Suíte atual   |  Testes | Assertions |
 | ------------- | ------: | ---------: |
-| `duel-engine` |     586 |      7.262 |
+| `duel-engine` |     626 |      7.368 |
 | API Laravel   |       2 |          4 |
-| **Total**     | **588** |  **7.266** |
+| **Total**     | **628** |  **7.372** |
 
-O motor possui **28 classes de teste** e **33 DataProviders**. O teste isolado
+O motor possui **29 classes de teste** e **35 DataProviders**. O teste isolado
 de paridade executa **4 testes e 193 assertions**, cobrindo RNG, embaralhamento,
 serialização e fluxo estrutural contra os vetores preservados da migração.
 

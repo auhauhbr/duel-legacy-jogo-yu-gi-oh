@@ -10,9 +10,14 @@ abstract readonly class Identifier
 {
     public function __construct(public string $value)
     {
-        if (trim($value) === '') {
+        if (static::isBlank($value)) {
             throw new InvalidArgumentException('O identificador não pode ser vazio.');
         }
+    }
+
+    protected static function isBlank(string $value): bool
+    {
+        return trim($value) === '';
     }
 
     final public function __toString(): string
