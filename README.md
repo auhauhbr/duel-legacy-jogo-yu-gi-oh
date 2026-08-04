@@ -129,6 +129,10 @@ pela Konami.
 - projeção tipada e somente de leitura de um `DuelPlayerState` legado para
   `PlayerCardZones`, resolvendo explicitamente os IDs pelas `CardInstance`
   fornecidas pelo chamador e preservando a ordem das sete zonas.
+- primitivo imutável de movimentação entre zonas tipadas fora do campo, com
+  origem, destino, `CardInstanceId` e índice de destino explícitos, preservação
+  da ordem e das referências imutáveis, compartilhamento estrutural das cinco
+  zonas não alteradas e ausência de alteração do agregado original.
 
 ### 🚧 Em desenvolvimento
 
@@ -155,7 +159,7 @@ pela Konami.
 | Perfil de regras | `GX_LEGACY`, 8.000 LP, mão inicial de 5 cartas, limites de Deck e zonas                                       |
 | Estado           | Jogadores, Duelo, zonas, fases, posições, identificadores e validações estruturais                            |
 | Aleatoriedade    | Seed explícita, RNG reproduzível, serialização e Fisher–Yates determinístico                                  |
-| Cartas           | Definições e instâncias readonly, zonas ordenadas tipadas, agregado imutável e projeção do estado legado      |
+| Cartas           | Definições e instâncias readonly, zonas tipadas, agregado, projeção legada e movimentação estrutural imutável |
 | Preparação       | Embaralhamento dos dois Decks, distribuição das mãos e início do primeiro turno                               |
 | Fluxo            | Compra, Deck Out, Apoio, Principal 1 e processamento estrutural da Fase Final até o próximo turno             |
 | Restrições       | Sem compra nem batalha no primeiro turno, controle de Invocação-Normal, consulta e descarte do excesso da mão |
@@ -172,12 +176,18 @@ snapshot tipado a partir de um `DuelPlayerState` e de uma lista explícita de
 `CardInstance`, resolve IDs pelo valor exato, aceita instâncias extras e mapeia
 diretamente as coleções legadas já separadas por orientação. A projeção não
 altera nem fica armazenada no estado legado, e snapshots existentes não são
-sincronizados com mudanças posteriores. As zonas de `DuelPlayerState` ainda
-armazenam IDs como strings e nenhuma operação existente foi migrada. Não há
-projeção inversa, movimentação entre zonas, compra, descarte ou embaralhamento
-tipados integrados, zonas de campo tipadas, catálogo, registro global de
-instâncias, efeitos executáveis, Correntes, ações legais, persistência ou cartas
-reais cadastradas.
+sincronizados com mudanças posteriores. `PlayerCardZonesMover` movimenta uma
+única instância entre duas dessas zonas, exige origem e destino diferentes e
+insere exatamente no índice informado. Somente origem e destino são
+reconstruídos; as outras cinco zonas, a `CardInstance`, sua `CardDefinition` e
+as cartas não movimentadas preservam identidade. As zonas de `DuelPlayerState`
+ainda armazenam IDs como strings e nenhuma operação existente foi migrada. Não
+há integração dessa movimentação ao estado legado, sincronização, projeção
+inversa, movimentação para ou a partir do campo, entre jogadores ou dentro da
+mesma zona, nem compra, descarte ou embaralhamento tipados integrados. Também
+não há semânticas de `draw`, `banish`, `destroy` ou `summon`, catálogo, registro
+global de instâncias, efeitos executáveis, Correntes, ações legais, persistência
+ou cartas reais cadastradas.
 
 `CardInstanceId` segue a semântica de whitespace ECMAScript já usada pelo
 domínio para rejeitar valores vazios. IDs válidos continuam preservados
@@ -285,11 +295,11 @@ O RNG foi projetado para repetibilidade do jogo, não para uso criptográfico.
 
 | Suíte atual   |  Testes | Assertions |
 | ------------- | ------: | ---------: |
-| `duel-engine` |     735 |      7.873 |
+| `duel-engine` |     776 |      8.490 |
 | API Laravel   |       2 |          4 |
-| **Total**     | **737** |  **7.877** |
+| **Total**     | **778** |  **8.494** |
 
-O motor possui **32 classes de teste** e **44 DataProviders**. O teste isolado
+O motor possui **33 classes de teste** e **50 DataProviders**. O teste isolado
 de paridade executa **4 testes e 193 assertions**, cobrindo RNG, embaralhamento,
 serialização e fluxo estrutural contra os vetores preservados da migração.
 
@@ -411,6 +421,7 @@ health check ou executar a suíte atual.
 - coleção ordenada e imutável de instâncias para zonas fora do campo;
 - agregado imutável das sete zonas ordenadas fora do campo;
 - projeção tipada e somente de leitura das zonas legadas fora do campo;
+- movimentação estrutural imutável entre zonas tipadas fora do campo;
 - RNG e embaralhamento determinísticos;
 - migração do backend e dos motores para PHP;
 - testes automatizados e ferramentas de qualidade.
@@ -459,9 +470,11 @@ marcos correspondentes, sem serem tratadas como tecnologias atuais.
 - não há registro global de instâncias;
 - `PlayerCardZones` não fica armazenado no `DuelPlayerState`, e as operações
   atuais continuam usando as coleções legadas de IDs;
-- não há sincronização automática, projeção inversa, migração do estado atual,
-  movimentação entre zonas, compra, descarte ou embaralhamento tipados
-  integrados, nem campo tipado;
+- a movimentação tipada não está integrada ao `DuelPlayerState` nem sincroniza
+  o estado legado; não há projeção inversa, migração do estado atual,
+  movimentação para ou a partir do campo, entre jogadores ou dentro da mesma
+  zona, compra, descarte ou embaralhamento tipados integrados, nem semânticas
+  de compra, banimento, destruição ou Invocação;
 - o processamento da Fase Final não resolve efeitos, Correntes ou efeitos
   pendentes;
 - o início do próximo turno não processa automaticamente a Fase de Compra;
