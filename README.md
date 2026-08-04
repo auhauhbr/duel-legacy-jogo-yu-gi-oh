@@ -130,6 +130,8 @@ pela Konami.
   `DuelPlayerState`, sem listas paralelas de IDs;
 - `MonsterZones` como fonte autoritativa das Zonas de Monstro, com posições
   fixas, ordenadas e vazias ou ocupadas por `CardInstance`;
+- `SpellTrapZones` como fonte autoritativa das Zonas de Magia e Armadilha, com
+  posições fixas, ordenadas e vazias ou ocupadas por `CardInstance`;
 - primitivo imutável de movimentação entre zonas tipadas fora do campo, com
   origem, destino, `CardInstanceId` e índice de destino explícitos, preservação
   da ordem e das referências imutáveis, compartilhamento estrutural das cinco
@@ -226,11 +228,23 @@ Cada posição fixa preserva seu índice e contém `null` ou uma `CardInstance`;
 serialização pública continua derivando `?string` com o ID histórico, sem expor
 `CardDefinition`. O agregado é compartilhado estruturalmente nas clonagens, e
 o `Engine` valida sua capacidade contra `RulesProfile`, sem codificar cinco
-posições no agregado. `spellTrapZones` e `fieldZone` continuam legadas. Esta
-etapa não restringe o tipo impresso da definição ocupante e não adiciona
+posições no agregado. Esta etapa não restringe o tipo impresso da definição
+ocupante e não adiciona
 Invocação, Baixar Monstro, posição de batalha, face-up/face-down, movimentação
 campo ↔ zonas fora do campo, controle, propriedade, efeitos, Correntes, ações
 legais, catálogo ou persistência.
+
+`SpellTrapZones` é a única fonte autoritativa das posições das Zonas de Magia e
+Armadilha em `DuelPlayerState`, que não armazena mais `list<?string>` para
+`spellTrapZones`. As posições são fixas, ordenadas e podem estar vazias; cada
+ocupante é uma `CardInstance`, sem restrição ao tipo impresso Monstro, Magia ou
+Armadilha. A serialização pública continua projetando `null|string`, preservando
+capacidade, índices, ordem e compatibilidade com a fixture TypeScript, sem expor
+`CardDefinition`. O agregado é compartilhado estruturalmente nas clonagens, e o
+`Engine` valida sua capacidade contra `RulesProfile`. `MonsterZones` permanece
+tipada e inalterada. Esta migração não implementa ativação, Baixar carta,
+face-up/face-down, Correntes, velocidade de Magia nem movimentação de campo.
+`fieldZone` continua legada como `?string`.
 
 As fixtures históricas da implementação TypeScript permanecem byte a byte
 inalteradas e compatíveis com a serialização pública por IDs. Não existe uma
@@ -341,11 +355,11 @@ O RNG foi projetado para repetibilidade do jogo, não para uso criptográfico.
 
 | Suíte atual   |  Testes | Assertions |
 | ------------- | ------: | ---------: |
-| `duel-engine` |     917 |     10.108 |
+| `duel-engine` |     966 |     10.584 |
 | API Laravel   |       2 |          4 |
-| **Total**     | **919** | **10.112** |
+| **Total**     | **968** | **10.588** |
 
-O motor possui **38 classes de teste** e **77 DataProviders**. O teste isolado
+O motor possui **40 classes de teste** e **85 DataProviders**. O teste isolado
 de paridade executa **4 testes e 193 assertions**, cobrindo RNG, embaralhamento,
 serialização e fluxo estrutural contra os vetores preservados da migração.
 
@@ -468,6 +482,8 @@ health check ou executar a suíte atual.
 - agregado imutável das sete zonas ordenadas fora do campo;
 - integração autoritativa das sete zonas tipadas fora do campo ao estado;
 - Zonas de Monstro tipadas, imutáveis e autoritativas, com posições fixas;
+- Zonas de Magia e Armadilha tipadas, imutáveis e autoritativas, com posições
+  fixas;
 - movimentação estrutural imutável entre zonas tipadas fora do campo;
 - compra semântica, tipada e imutável do topo do Deck Principal para o final
   da mão;
@@ -481,7 +497,7 @@ health check ou executar a suíte atual.
 
 ### Próximas etapas
 
-- zonas de campo tipadas e operações específicas de campo;
+- Zona de Campo tipada ou uma operação explícita de campo;
 - catálogo de cartas;
 - ações legais;
 - comandos e eventos;
@@ -521,10 +537,15 @@ marcos correspondentes, sem serem tratadas como tecnologias atuais.
 - não há efeitos executáveis, Correntes ou ações legais de cartas;
 - não há catálogo de cartas nem cartas reais cadastradas;
 - não há registro global de instâncias;
-- `spellTrapZones` e `fieldZone` continuam legadas como IDs;
+- `fieldZone` continua legada como ID; ainda não existe Zona de Campo tipada;
 - as Zonas de Monstro já são tipadas, mas ainda não há posição de batalha,
   face-up/face-down, Invocação, Baixar Monstro nem movimentação campo ↔ zonas
   fora do campo;
+- as Zonas de Magia e Armadilha já são tipadas, mas ainda não há
+  face-up/face-down, ativação, Baixar carta, Correntes, velocidade de Magia,
+  movimentação campo ↔ zonas fora do campo, controle, propriedade, efeitos ou
+  ações legais;
+- não há catálogo nem persistência para as zonas tipadas;
 - não há escolha automática, descarte aleatório, custo de efeito, efeitos de
   substituição, movimentação entre jogadores ou dentro da mesma zona, nem
   semânticas de banimento, destruição ou Invocação;

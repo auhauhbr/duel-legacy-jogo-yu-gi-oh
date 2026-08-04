@@ -27,7 +27,7 @@ final class CreateInitialPlayerStateTest extends TestCase
         self::assertTrue($state->cardZones->hand->isEmpty());
         self::assertTrue($state->cardZones->graveyard->isEmpty());
         self::assertSame([null, null, null, null, null], $state->monsterZones->slots());
-        self::assertSame([null, null, null, null, null], $state->spellTrapZones);
+        self::assertSame([null, null, null, null, null], $state->spellTrapZones->slots());
         self::assertNull($state->fieldZone);
         self::assertSame(0, $state->normalSummonsUsed);
         self::assertSame(1, $state->normalSummonLimit);

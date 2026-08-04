@@ -8,19 +8,17 @@ use DuelLegacy\DuelEngine\Cards\CardInstance;
 use DuelLegacy\DuelEngine\Zones\MonsterZones;
 use DuelLegacy\DuelEngine\Zones\OrderedCardZone;
 use DuelLegacy\DuelEngine\Zones\PlayerCardZones;
+use DuelLegacy\DuelEngine\Zones\SpellTrapZones;
 use InvalidArgumentException;
 
 final readonly class DuelPlayerState
 {
-    /**
-     * @param  list<?string>  $spellTrapZones
-     */
     public function __construct(
         public string $playerId,
         public int $lifePoints,
         public PlayerCardZones $cardZones,
         public MonsterZones $monsterZones,
-        public array $spellTrapZones,
+        public SpellTrapZones $spellTrapZones,
         public ?string $fieldZone,
         public int $normalSummonsUsed,
         public int $normalSummonLimit,
@@ -43,12 +41,20 @@ final readonly class DuelPlayerState
             $monsterZones = $changes['monsterZones'];
         }
 
+        $spellTrapZones = $this->spellTrapZones;
+        if (array_key_exists('spellTrapZones', $changes)) {
+            if (! $changes['spellTrapZones'] instanceof SpellTrapZones) {
+                throw new InvalidArgumentException('spellTrapZones deve ser uma instância de SpellTrapZones.');
+            }
+            $spellTrapZones = $changes['spellTrapZones'];
+        }
+
         return new self(
             playerId: $changes['playerId'] ?? $this->playerId,
             lifePoints: $changes['lifePoints'] ?? $this->lifePoints,
             cardZones: $changes['cardZones'] ?? $this->cardZones,
             monsterZones: $monsterZones,
-            spellTrapZones: $changes['spellTrapZones'] ?? $this->spellTrapZones,
+            spellTrapZones: $spellTrapZones,
             fieldZone: array_key_exists('fieldZone', $changes) ? $changes['fieldZone'] : $this->fieldZone,
             normalSummonsUsed: $changes['normalSummonsUsed'] ?? $this->normalSummonsUsed,
             normalSummonLimit: $changes['normalSummonLimit'] ?? $this->normalSummonLimit,
@@ -69,7 +75,7 @@ final readonly class DuelPlayerState
             'extraDeckFaceDown' => self::ids($this->cardZones->extraDeckFaceDown),
             'extraDeckFaceUp' => self::ids($this->cardZones->extraDeckFaceUp),
             'monsterZones' => self::monsterZoneIds($this->monsterZones),
-            'spellTrapZones' => $this->spellTrapZones,
+            'spellTrapZones' => self::spellTrapZoneIds($this->spellTrapZones),
             'fieldZone' => $this->fieldZone,
             'normalSummonsUsed' => $this->normalSummonsUsed,
             'normalSummonLimit' => $this->normalSummonLimit,
@@ -87,6 +93,15 @@ final readonly class DuelPlayerState
 
     /** @return list<?string> */
     private static function monsterZoneIds(MonsterZones $zones): array
+    {
+        return array_map(
+            static fn (?CardInstance $card): ?string => $card?->id->value,
+            $zones->slots(),
+        );
+    }
+
+    /** @return list<?string> */
+    private static function spellTrapZoneIds(SpellTrapZones $zones): array
     {
         return array_map(
             static fn (?CardInstance $card): ?string => $card?->id->value,

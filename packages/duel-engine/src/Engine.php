@@ -28,6 +28,7 @@ use DuelLegacy\DuelEngine\Zones\OrderedCardZone;
 use DuelLegacy\DuelEngine\Zones\PlayerCardZones;
 use DuelLegacy\DuelEngine\Zones\PlayerCardZonesDrawer;
 use DuelLegacy\DuelEngine\Zones\PlayerCardZonesHandExcessDiscarder;
+use DuelLegacy\DuelEngine\Zones\SpellTrapZones;
 use InvalidArgumentException;
 
 final class Engine
@@ -135,7 +136,7 @@ final class Engine
                 extraDeckFaceUp: new OrderedCardZone(CardLocation::EXTRA_DECK_FACE_UP),
             ),
             monsterZones: MonsterZones::empty((int) $profile->mainMonsterZones),
-            spellTrapZones: array_fill(0, (int) $profile->spellTrapZones, null),
+            spellTrapZones: SpellTrapZones::empty((int) $profile->spellTrapZones),
             fieldZone: null,
             normalSummonsUsed: 0,
             normalSummonLimit: 1,
@@ -634,7 +635,7 @@ final class Engine
     private static function validatePlayerZones(array $players, RulesProfile $profile): void
     {
         foreach ($players as $player) {
-            if ($player->monsterZones->capacity() !== $profile->mainMonsterZones || count($player->spellTrapZones) !== $profile->spellTrapZones) {
+            if ($player->monsterZones->capacity() !== $profile->mainMonsterZones || $player->spellTrapZones->capacity() !== $profile->spellTrapZones) {
                 throw new InvalidArgumentException('As zonas do jogador são incompatíveis com o perfil.');
             }
         }
@@ -654,7 +655,13 @@ final class Engine
                         static fn (?CardInstance $card): bool => $card !== null,
                     )),
                 ),
-                ...array_values(array_filter($player->spellTrapZones, static fn (?string $id): bool => $id !== null)),
+                ...array_map(
+                    static fn (CardInstance $card): string => $card->id->value,
+                    array_values(array_filter(
+                        $player->spellTrapZones->slots(),
+                        static fn (?CardInstance $card): bool => $card !== null,
+                    )),
+                ),
                 ...($player->fieldZone === null ? [] : [$player->fieldZone]),
             ];
             foreach ($ids as $id) {
@@ -734,7 +741,7 @@ final class Engine
             lifePoints: $player->lifePoints,
             cardZones: $player->cardZones,
             monsterZones: $player->monsterZones,
-            spellTrapZones: [...$player->spellTrapZones],
+            spellTrapZones: $player->spellTrapZones,
             fieldZone: $player->fieldZone,
             normalSummonsUsed: $player->normalSummonsUsed,
             normalSummonLimit: $player->normalSummonLimit,
