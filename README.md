@@ -133,6 +133,11 @@ pela Konami.
   origem, destino, `CardInstanceId` e índice de destino explícitos, preservação
   da ordem e das referências imutáveis, compartilhamento estrutural das cinco
   zonas não alteradas e ausência de alteração do agregado original.
+- compra tipada e imutável de exatamente uma carta, removendo o topo de
+  `MAIN_DECK`, inserindo no final de `HAND` por meio de
+  `PlayerCardZonesMover`, preservando ordem, compartilhamento estrutural e o
+  agregado original, com erro determinístico quando o Deck Principal está
+  vazio.
 
 ### 🚧 Em desenvolvimento
 
@@ -159,7 +164,7 @@ pela Konami.
 | Perfil de regras | `GX_LEGACY`, 8.000 LP, mão inicial de 5 cartas, limites de Deck e zonas                                       |
 | Estado           | Jogadores, Duelo, zonas, fases, posições, identificadores e validações estruturais                            |
 | Aleatoriedade    | Seed explícita, RNG reproduzível, serialização e Fisher–Yates determinístico                                  |
-| Cartas           | Definições e instâncias readonly, zonas tipadas, agregado, projeção legada e movimentação estrutural imutável |
+| Cartas           | Definições e instâncias readonly, zonas tipadas, agregado, projeção legada, movimentação e compra imutáveis   |
 | Preparação       | Embaralhamento dos dois Decks, distribuição das mãos e início do primeiro turno                               |
 | Fluxo            | Compra, Deck Out, Apoio, Principal 1 e processamento estrutural da Fase Final até o próximo turno             |
 | Restrições       | Sem compra nem batalha no primeiro turno, controle de Invocação-Normal, consulta e descarte do excesso da mão |
@@ -180,14 +185,19 @@ sincronizados com mudanças posteriores. `PlayerCardZonesMover` movimenta uma
 única instância entre duas dessas zonas, exige origem e destino diferentes e
 insere exatamente no índice informado. Somente origem e destino são
 reconstruídos; as outras cinco zonas, a `CardInstance`, sua `CardDefinition` e
-as cartas não movimentadas preservam identidade. As zonas de `DuelPlayerState`
-ainda armazenam IDs como strings e nenhuma operação existente foi migrada. Não
-há integração dessa movimentação ao estado legado, sincronização, projeção
-inversa, movimentação para ou a partir do campo, entre jogadores ou dentro da
-mesma zona, nem compra, descarte ou embaralhamento tipados integrados. Também
-não há semânticas de `draw`, `banish`, `destroy` ou `summon`, catálogo, registro
-global de instâncias, efeitos executáveis, Correntes, ações legais, persistência
-ou cartas reais cadastradas.
+as cartas não movimentadas preservam identidade. `PlayerCardZonesDrawer`
+compõe esse primitivo para comprar exatamente a instância no índice zero de
+`MAIN_DECK` e anexá-la ao final de `HAND`, sem ordenar ou aplicar limite de mão.
+A compra preserva o agregado original, compartilha as outras cinco zonas e
+falha com mensagem determinística quando o Deck Principal está vazio, sem
+resolver Deck Out. As zonas de `DuelPlayerState` ainda armazenam IDs como
+strings e nenhuma operação existente foi migrada. Não há integração da
+movimentação ou da compra ao estado legado, sincronização, projeção inversa,
+movimentação para ou a partir do campo, entre jogadores ou dentro da mesma
+zona, nem descarte ou embaralhamento tipados integrados. Também não há
+semânticas de `banish`, `destroy` ou `summon`, catálogo, registro global de
+instâncias, efeitos executáveis, Correntes, ações legais, persistência ou cartas
+reais cadastradas.
 
 `CardInstanceId` segue a semântica de whitespace ECMAScript já usada pelo
 domínio para rejeitar valores vazios. IDs válidos continuam preservados
@@ -295,11 +305,11 @@ O RNG foi projetado para repetibilidade do jogo, não para uso criptográfico.
 
 | Suíte atual   |  Testes | Assertions |
 | ------------- | ------: | ---------: |
-| `duel-engine` |     776 |      8.490 |
+| `duel-engine` |     793 |      8.686 |
 | API Laravel   |       2 |          4 |
-| **Total**     | **778** |  **8.494** |
+| **Total**     | **795** |  **8.690** |
 
-O motor possui **33 classes de teste** e **50 DataProviders**. O teste isolado
+O motor possui **34 classes de teste** e **56 DataProviders**. O teste isolado
 de paridade executa **4 testes e 193 assertions**, cobrindo RNG, embaralhamento,
 serialização e fluxo estrutural contra os vetores preservados da migração.
 
@@ -422,6 +432,8 @@ health check ou executar a suíte atual.
 - agregado imutável das sete zonas ordenadas fora do campo;
 - projeção tipada e somente de leitura das zonas legadas fora do campo;
 - movimentação estrutural imutável entre zonas tipadas fora do campo;
+- compra semântica, tipada e imutável do topo do Deck Principal para o final
+  da mão;
 - RNG e embaralhamento determinísticos;
 - migração do backend e dos motores para PHP;
 - testes automatizados e ferramentas de qualidade.
@@ -470,11 +482,13 @@ marcos correspondentes, sem serem tratadas como tecnologias atuais.
 - não há registro global de instâncias;
 - `PlayerCardZones` não fica armazenado no `DuelPlayerState`, e as operações
   atuais continuam usando as coleções legadas de IDs;
-- a movimentação tipada não está integrada ao `DuelPlayerState` nem sincroniza
-  o estado legado; não há projeção inversa, migração do estado atual,
-  movimentação para ou a partir do campo, entre jogadores ou dentro da mesma
-  zona, compra, descarte ou embaralhamento tipados integrados, nem semânticas
-  de compra, banimento, destruição ou Invocação;
+- a movimentação e a compra tipadas não estão integradas ao `DuelPlayerState`,
+  à Fase de Compra ou ao estado legado; não há sincronização, projeção inversa,
+  resolução tipada de Deck Out, determinação de vencedor, validação de fase ou
+  jogador ativo, compra de várias cartas, mão inicial tipada, efeitos de compra,
+  limite de mão durante a compra, descarte ou embaralhamento tipados integrados,
+  movimentação para zonas de campo, entre jogadores ou dentro da mesma zona,
+  nem semânticas de banimento, destruição ou Invocação;
 - o processamento da Fase Final não resolve efeitos, Correntes ou efeitos
   pendentes;
 - o início do próximo turno não processa automaticamente a Fase de Compra;
