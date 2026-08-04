@@ -6,6 +6,7 @@ namespace DuelLegacy\DuelEngine\Tests;
 
 use DuelLegacy\DuelEngine\Cards\CardLocation;
 use DuelLegacy\DuelEngine\Tests\Support\TestFactory;
+use DuelLegacy\DuelEngine\Zones\MonsterZones;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -72,7 +73,7 @@ final class CreateInitialDuelStateTest extends TestCase
     {
         $first = TestFactory::player('p1');
         try {
-            createInitialDuelState('d', gxLegacyProfile(), 'e', 'p', [$first->with(['monsterZones' => []]), TestFactory::player('p2')], 'p1');
+            createInitialDuelState('d', gxLegacyProfile(), 'e', 'p', [$first->with(['monsterZones' => MonsterZones::empty(0)]), TestFactory::player('p2')], 'p1');
             self::fail();
         } catch (InvalidArgumentException $exception) {
             self::assertSame('As zonas do jogador são incompatíveis com o perfil.', $exception->getMessage());

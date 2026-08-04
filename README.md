@@ -128,6 +128,8 @@ pela Konami.
   zonas, consultas globais de leitura e serialização determinística.
 - `PlayerCardZones` como fonte autoritativa das sete zonas fora do campo em
   `DuelPlayerState`, sem listas paralelas de IDs;
+- `MonsterZones` como fonte autoritativa das Zonas de Monstro, com posições
+  fixas, ordenadas e vazias ou ocupadas por `CardInstance`;
 - primitivo imutável de movimentação entre zonas tipadas fora do campo, com
   origem, destino, `CardInstanceId` e índice de destino explícitos, preservação
   da ordem e das referências imutáveis, compartilhamento estrutural das cinco
@@ -218,11 +220,21 @@ semânticas de `banish`, `destroy` ou `summon`, catálogo, registro global de
 instâncias, efeitos executáveis, Correntes, ações legais, persistência ou cartas
 reais cadastradas.
 
+`MonsterZones` é a única fonte autoritativa das posições das Zonas de Monstro
+em `DuelPlayerState`: o estado não armazena mais `list<?string>` para essa área.
+Cada posição fixa preserva seu índice e contém `null` ou uma `CardInstance`; a
+serialização pública continua derivando `?string` com o ID histórico, sem expor
+`CardDefinition`. O agregado é compartilhado estruturalmente nas clonagens, e
+o `Engine` valida sua capacidade contra `RulesProfile`, sem codificar cinco
+posições no agregado. `spellTrapZones` e `fieldZone` continuam legadas. Esta
+etapa não restringe o tipo impresso da definição ocupante e não adiciona
+Invocação, Baixar Monstro, posição de batalha, face-up/face-down, movimentação
+campo ↔ zonas fora do campo, controle, propriedade, efeitos, Correntes, ações
+legais, catálogo ou persistência.
+
 As fixtures históricas da implementação TypeScript permanecem byte a byte
-inalteradas e compatíveis com a serialização pública por IDs. As zonas de campo
-(`monsterZones`, `spellTrapZones` e `fieldZone`) permanecem temporariamente no
-formato legado; não existe uma segunda representação das sete zonas fora do
-campo.
+inalteradas e compatíveis com a serialização pública por IDs. Não existe uma
+representação paralela das zonas já migradas.
 
 `CardInstanceId` segue a semântica de whitespace ECMAScript já usada pelo
 domínio para rejeitar valores vazios. IDs válidos continuam preservados
@@ -329,11 +341,11 @@ O RNG foi projetado para repetibilidade do jogo, não para uso criptográfico.
 
 | Suíte atual   |  Testes | Assertions |
 | ------------- | ------: | ---------: |
-| `duel-engine` |     860 |      9.650 |
+| `duel-engine` |     917 |     10.108 |
 | API Laravel   |       2 |          4 |
-| **Total**     | **862** |  **9.654** |
+| **Total**     | **919** | **10.112** |
 
-O motor possui **36 classes de teste** e **68 DataProviders**. O teste isolado
+O motor possui **38 classes de teste** e **77 DataProviders**. O teste isolado
 de paridade executa **4 testes e 193 assertions**, cobrindo RNG, embaralhamento,
 serialização e fluxo estrutural contra os vetores preservados da migração.
 
@@ -455,6 +467,7 @@ health check ou executar a suíte atual.
 - coleção ordenada e imutável de instâncias para zonas fora do campo;
 - agregado imutável das sete zonas ordenadas fora do campo;
 - integração autoritativa das sete zonas tipadas fora do campo ao estado;
+- Zonas de Monstro tipadas, imutáveis e autoritativas, com posições fixas;
 - movimentação estrutural imutável entre zonas tipadas fora do campo;
 - compra semântica, tipada e imutável do topo do Deck Principal para o final
   da mão;
@@ -508,9 +521,10 @@ marcos correspondentes, sem serem tratadas como tecnologias atuais.
 - não há efeitos executáveis, Correntes ou ações legais de cartas;
 - não há catálogo de cartas nem cartas reais cadastradas;
 - não há registro global de instâncias;
-- `monsterZones`, `spellTrapZones` e `fieldZone` continuam legadas como IDs;
-- ainda não há zonas de campo tipadas nem movimentação campo ↔ zonas fora do
-  campo;
+- `spellTrapZones` e `fieldZone` continuam legadas como IDs;
+- as Zonas de Monstro já são tipadas, mas ainda não há posição de batalha,
+  face-up/face-down, Invocação, Baixar Monstro nem movimentação campo ↔ zonas
+  fora do campo;
 - não há escolha automática, descarte aleatório, custo de efeito, efeitos de
   substituição, movimentação entre jogadores ou dentro da mesma zona, nem
   semânticas de banimento, destruição ou Invocação;
