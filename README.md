@@ -138,6 +138,11 @@ pela Konami.
   `PlayerCardZonesMover`, preservando ordem, compartilhamento estrutural e o
   agregado original, com erro determinístico quando o Deck Principal está
   vazio.
+- descarte tipado e imutável de exatamente uma carta escolhida por
+  `CardInstanceId`, removendo-a somente de `HAND` e inserindo-a no final de
+  `GRAVEYARD` por meio de `PlayerCardZonesMover`, com preservação da ordem, do
+  compartilhamento estrutural e do agregado original, além de erro
+  determinístico quando o ID não está na mão.
 
 ### 🚧 Em desenvolvimento
 
@@ -158,17 +163,17 @@ pela Konami.
 
 ## Funcionalidades implementadas
 
-| Área             | Entregas atuais                                                                                               |
-| ---------------- | ------------------------------------------------------------------------------------------------------------- |
-| Fundação         | Monorepo, contratos OpenAPI, API Laravel e pacotes Composer separados                                         |
-| Perfil de regras | `GX_LEGACY`, 8.000 LP, mão inicial de 5 cartas, limites de Deck e zonas                                       |
-| Estado           | Jogadores, Duelo, zonas, fases, posições, identificadores e validações estruturais                            |
-| Aleatoriedade    | Seed explícita, RNG reproduzível, serialização e Fisher–Yates determinístico                                  |
-| Cartas           | Definições e instâncias readonly, zonas tipadas, agregado, projeção legada, movimentação e compra imutáveis   |
-| Preparação       | Embaralhamento dos dois Decks, distribuição das mãos e início do primeiro turno                               |
-| Fluxo            | Compra, Deck Out, Apoio, Principal 1 e processamento estrutural da Fase Final até o próximo turno             |
-| Restrições       | Sem compra nem batalha no primeiro turno, controle de Invocação-Normal, consulta e descarte do excesso da mão |
-| Integração       | Health check público e teste do carregamento do motor pela aplicação Laravel                                  |
+| Área             | Entregas atuais                                                                                                       |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Fundação         | Monorepo, contratos OpenAPI, API Laravel e pacotes Composer separados                                                 |
+| Perfil de regras | `GX_LEGACY`, 8.000 LP, mão inicial de 5 cartas, limites de Deck e zonas                                               |
+| Estado           | Jogadores, Duelo, zonas, fases, posições, identificadores e validações estruturais                                    |
+| Aleatoriedade    | Seed explícita, RNG reproduzível, serialização e Fisher–Yates determinístico                                          |
+| Cartas           | Definições e instâncias readonly, zonas tipadas, agregado, projeção legada, movimentação, compra e descarte imutáveis |
+| Preparação       | Embaralhamento dos dois Decks, distribuição das mãos e início do primeiro turno                                       |
+| Fluxo            | Compra, Deck Out, Apoio, Principal 1 e processamento estrutural da Fase Final até o próximo turno                     |
+| Restrições       | Sem compra nem batalha no primeiro turno, controle de Invocação-Normal, consulta e descarte do excesso da mão         |
+| Integração       | Health check público e teste do carregamento do motor pela aplicação Laravel                                          |
 
 O escopo implementado ainda é estrutural. `OrderedCardZone` representa Deck
 Principal, mão, Cemitério, banidas e Deck Adicional com `CardInstance`; a ordem
@@ -190,11 +195,19 @@ compõe esse primitivo para comprar exatamente a instância no índice zero de
 `MAIN_DECK` e anexá-la ao final de `HAND`, sem ordenar ou aplicar limite de mão.
 A compra preserva o agregado original, compartilha as outras cinco zonas e
 falha com mensagem determinística quando o Deck Principal está vazio, sem
-resolver Deck Out. As zonas de `DuelPlayerState` ainda armazenam IDs como
-strings e nenhuma operação existente foi migrada. Não há integração da
-movimentação ou da compra ao estado legado, sincronização, projeção inversa,
-movimentação para ou a partir do campo, entre jogadores ou dentro da mesma
-zona, nem descarte ou embaralhamento tipados integrados. Também não há
+resolver Deck Out. `PlayerCardZonesDiscarder` recebe um `CardInstanceId`
+explícito, exige sua presença exata em `HAND` e o anexa ao final de
+`GRAVEYARD`, também compondo `PlayerCardZonesMover`. A ordem das cartas
+restantes da mão e das cartas anteriores do Cemitério é preservada; somente
+essas duas zonas são reconstruídas, e o agregado original permanece
+inalterado. Um ID ausente na mão falha deterministicamente e não é procurado em
+outras zonas. As zonas de `DuelPlayerState` ainda armazenam IDs como strings e
+nenhuma operação existente foi migrada. Não há integração da movimentação, da
+compra ou do descarte tipado ao estado legado, à Fase Final ou ao descarte de
+excesso; também não há sincronização, projeção inversa, descarte múltiplo,
+automático ou aleatório, custo de efeito, efeitos de substituição, validação de
+fase ou jogador ativo, movimentação para ou a partir do campo, entre jogadores
+ou dentro da mesma zona, nem embaralhamento tipado integrado. Também não há
 semânticas de `banish`, `destroy` ou `summon`, catálogo, registro global de
 instâncias, efeitos executáveis, Correntes, ações legais, persistência ou cartas
 reais cadastradas.
@@ -305,11 +318,11 @@ O RNG foi projetado para repetibilidade do jogo, não para uso criptográfico.
 
 | Suíte atual   |  Testes | Assertions |
 | ------------- | ------: | ---------: |
-| `duel-engine` |     793 |      8.686 |
+| `duel-engine` |     818 |      9.021 |
 | API Laravel   |       2 |          4 |
-| **Total**     | **795** |  **8.690** |
+| **Total**     | **820** |  **9.025** |
 
-O motor possui **34 classes de teste** e **56 DataProviders**. O teste isolado
+O motor possui **35 classes de teste** e **60 DataProviders**. O teste isolado
 de paridade executa **4 testes e 193 assertions**, cobrindo RNG, embaralhamento,
 serialização e fluxo estrutural contra os vetores preservados da migração.
 
@@ -434,6 +447,8 @@ health check ou executar a suíte atual.
 - movimentação estrutural imutável entre zonas tipadas fora do campo;
 - compra semântica, tipada e imutável do topo do Deck Principal para o final
   da mão;
+- descarte semântico, tipado e imutável de uma carta escolhida da mão para o
+  final do Cemitério;
 - RNG e embaralhamento determinísticos;
 - migração do backend e dos motores para PHP;
 - testes automatizados e ferramentas de qualidade.
@@ -482,13 +497,16 @@ marcos correspondentes, sem serem tratadas como tecnologias atuais.
 - não há registro global de instâncias;
 - `PlayerCardZones` não fica armazenado no `DuelPlayerState`, e as operações
   atuais continuam usando as coleções legadas de IDs;
-- a movimentação e a compra tipadas não estão integradas ao `DuelPlayerState`,
-  à Fase de Compra ou ao estado legado; não há sincronização, projeção inversa,
-  resolução tipada de Deck Out, determinação de vencedor, validação de fase ou
-  jogador ativo, compra de várias cartas, mão inicial tipada, efeitos de compra,
-  limite de mão durante a compra, descarte ou embaralhamento tipados integrados,
-  movimentação para zonas de campo, entre jogadores ou dentro da mesma zona,
-  nem semânticas de banimento, destruição ou Invocação;
+- a movimentação, a compra e o descarte tipados não estão integrados ao
+  `DuelPlayerState` nem ao estado legado; a compra não está integrada à Fase de
+  Compra, e o descarte tipado não está integrado à Fase Final nem ao descarte
+  de excesso. Não há sincronização, projeção inversa, resolução tipada de Deck
+  Out, determinação de vencedor, validação de fase ou jogador ativo, compra de
+  várias cartas, mão inicial tipada, efeitos de compra, limite de mão durante a
+  compra, descarte múltiplo, automático ou aleatório, custo de efeito, efeitos
+  de substituição, embaralhamento tipado integrado, movimentação para zonas de
+  campo, entre jogadores ou dentro da mesma zona, nem semânticas de banimento,
+  destruição ou Invocação;
 - o processamento da Fase Final não resolve efeitos, Correntes ou efeitos
   pendentes;
 - o início do próximo turno não processa automaticamente a Fase de Compra;
