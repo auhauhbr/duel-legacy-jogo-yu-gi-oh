@@ -11,6 +11,7 @@ use DuelLegacy\DuelEngine\Players\DuelPlayerState;
 use DuelLegacy\DuelEngine\Tests\Support\TestFactory;
 use DuelLegacy\DuelEngine\Zones\MonsterZones;
 use DuelLegacy\DuelEngine\Zones\OrderedCardZone;
+use DuelLegacy\DuelEngine\Zones\SpellTrapZones;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -47,7 +48,7 @@ final class AuthoritativeMonsterZonesTest extends TestCase
             8000,
             TestFactory::playerCardZones(),
             $zones,
-            [null, null, null],
+            SpellTrapZones::empty(3),
             null,
             0,
             1,
@@ -148,7 +149,7 @@ final class AuthoritativeMonsterZonesTest extends TestCase
             self::assertSame(0, $player->monsterZones->occupiedCount());
             self::assertTrue($player->monsterZones->isEmpty());
             self::assertSame($main, $player->cardZones->mainDeck->cards());
-            self::assertSame([null, null, null, null, null], $player->spellTrapZones);
+            self::assertSame([null, null, null, null, null], $player->spellTrapZones->slots());
             self::assertNull($player->fieldZone);
         }
     }
@@ -179,10 +180,10 @@ final class AuthoritativeMonsterZonesTest extends TestCase
         }
     }
 
-    public function test_engine_keeps_spell_trap_capacity_validation_legacy_and_field_zone_unchanged(): void
+    public function test_engine_keeps_spell_trap_capacity_validation_and_field_zone_unchanged(): void
     {
         $player = TestFactory::player('p1')->with([
-            'spellTrapZones' => [],
+            'spellTrapZones' => SpellTrapZones::empty(0),
             'fieldZone' => 'legacy-field-id',
         ]);
 
@@ -213,7 +214,7 @@ final class AuthoritativeMonsterZonesTest extends TestCase
         } elseif ($area === 'spell-trap') {
             $first = $first->with([
                 'monsterZones' => TestFactory::monsterZones([TestFactory::card($duplicate), null, null, null, null]),
-                'spellTrapZones' => [null, $duplicate, null, null, null],
+                'spellTrapZones' => TestFactory::spellTrapZones([null, TestFactory::card($duplicate), null, null, null]),
             ]);
         } elseif ($area === 'field') {
             $first = $first->with([
@@ -266,7 +267,7 @@ final class AuthoritativeMonsterZonesTest extends TestCase
         ]);
         $profile = TestFactory::profile(['mainMonsterZones' => 4]);
         $duel = createInitialDuelState('duel', $profile, 'engine', 'pool', [$first->with([
-            'spellTrapZones' => [null, null, null, null, null],
+            'spellTrapZones' => SpellTrapZones::empty(5),
         ]), $second], 'p1');
 
         self::assertSame(array_slice($ids, 0, 4), $duel->players[0]->toArray()['monsterZones']);

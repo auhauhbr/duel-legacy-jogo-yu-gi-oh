@@ -12,6 +12,7 @@ use DuelLegacy\DuelEngine\Phases\DuelPhase;
 use DuelLegacy\DuelEngine\Rules\RulesProfile;
 use DuelLegacy\DuelEngine\Tests\Support\TestFactory;
 use DuelLegacy\DuelEngine\Zones\MonsterZones;
+use DuelLegacy\DuelEngine\Zones\SpellTrapZones;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
@@ -228,9 +229,15 @@ final class PublicStateOperationInvariantsTest extends TestCase
             foreach ([0, 1] as $playerIndex) {
                 self::assertSame($state->players[$playerIndex]->monsterZones, $first->players[$playerIndex]->monsterZones);
                 self::assertSame($state->players[$playerIndex]->monsterZones, $second->players[$playerIndex]->monsterZones);
+                self::assertSame($state->players[$playerIndex]->spellTrapZones, $first->players[$playerIndex]->spellTrapZones);
+                self::assertSame($state->players[$playerIndex]->spellTrapZones, $second->players[$playerIndex]->spellTrapZones);
                 foreach ($state->players[$playerIndex]->monsterZones->slots() as $slotIndex => $card) {
                     self::assertSame($card, $first->players[$playerIndex]->monsterZones->get($slotIndex));
                     self::assertSame($card?->definition, $first->players[$playerIndex]->monsterZones->get($slotIndex)?->definition);
+                }
+                foreach ($state->players[$playerIndex]->spellTrapZones->slots() as $slotIndex => $card) {
+                    self::assertSame($card, $first->players[$playerIndex]->spellTrapZones->get($slotIndex));
+                    self::assertSame($card?->definition, $first->players[$playerIndex]->spellTrapZones->get($slotIndex)?->definition);
                 }
             }
         } else {
@@ -276,7 +283,7 @@ final class PublicStateOperationInvariantsTest extends TestCase
             'duplicate_turn_order' => ['turnOrder' => ['player-1', 'player-1']],
             'unknown_turn_order' => ['turnOrder' => ['player-1', 'unknown']],
             'monster_zones' => ['players' => [$players[0]->with(['monsterZones' => MonsterZones::empty(0)]), $players[1]]],
-            'spell_trap_zones' => ['players' => [$players[0], $players[1]->with(['spellTrapZones' => []])]],
+            'spell_trap_zones' => ['players' => [$players[0], $players[1]->with(['spellTrapZones' => SpellTrapZones::empty(0)])]],
             'initial_hand' => ['players' => [TestFactory::withZoneIds($players[0], CardLocation::HAND, []), $players[1]]],
             default => throw new \LogicException("Mutação desconhecida: {$mutation}"),
         };
@@ -303,7 +310,7 @@ final class PublicStateOperationInvariantsTest extends TestCase
         } else {
             $change = match ($area) {
                 'monsterZones' => ['monsterZones' => TestFactory::monsterZones([TestFactory::card($duplicate), null, null, null, null])],
-                'spellTrapZones' => ['spellTrapZones' => [$duplicate, null, null, null, null]],
+                'spellTrapZones' => ['spellTrapZones' => TestFactory::spellTrapZones([TestFactory::card($duplicate), null, null, null, null])],
                 'fieldZone' => ['fieldZone' => $duplicate],
                 default => throw new \LogicException("Área desconhecida: {$area}"),
             };

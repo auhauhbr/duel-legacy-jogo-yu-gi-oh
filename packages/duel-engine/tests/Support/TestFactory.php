@@ -17,6 +17,7 @@ use DuelLegacy\DuelEngine\Rules\RulesProfile;
 use DuelLegacy\DuelEngine\Zones\MonsterZones;
 use DuelLegacy\DuelEngine\Zones\OrderedCardZone;
 use DuelLegacy\DuelEngine\Zones\PlayerCardZones;
+use DuelLegacy\DuelEngine\Zones\SpellTrapZones;
 
 use function DuelLegacy\DuelEngine\createDeterministicRng;
 use function DuelLegacy\DuelEngine\createInitialDuelState;
@@ -51,7 +52,7 @@ final class TestFactory
             'lifePoints' => $playerId === 'player-1' ? 7100 : 6200,
             'cardZones' => $cardZones,
             'monsterZones' => self::monsterZones([null, self::card("{$playerId}-monster"), null, null, null]),
-            'spellTrapZones' => [null, null, "{$playerId}-spell", null, null],
+            'spellTrapZones' => self::spellTrapZones([null, null, self::card("{$playerId}-spell"), null, null]),
             'fieldZone' => "{$playerId}-field",
             'normalSummonsUsed' => $playerId === 'player-1' ? 1 : 0,
             'normalSummonLimit' => $playerId === 'player-1' ? 2 : 1,
@@ -134,6 +135,12 @@ final class TestFactory
     public static function monsterZones(array $slots): MonsterZones
     {
         return new MonsterZones($slots);
+    }
+
+    /** @param list<?CardInstance> $slots */
+    public static function spellTrapZones(array $slots): SpellTrapZones
+    {
+        return new SpellTrapZones($slots);
     }
 
     /** @param list<string> $instanceIds */

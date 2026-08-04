@@ -10,6 +10,7 @@ use DuelLegacy\DuelEngine\Players\DuelPlayerState;
 use DuelLegacy\DuelEngine\Tests\Support\TestFactory;
 use DuelLegacy\DuelEngine\Zones\MonsterZones;
 use DuelLegacy\DuelEngine\Zones\OrderedCardZone;
+use DuelLegacy\DuelEngine\Zones\SpellTrapZones;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -53,7 +54,7 @@ final class AuthoritativePlayerCardZonesTest extends TestCase
     public function test_player_has_one_authoritative_off_field_state_and_preserves_object_identity(): void
     {
         $zones = TestFactory::playerCardZones(mainDeck: [$card = TestFactory::card('A')]);
-        $player = new DuelPlayerState('p1', 8000, $zones, MonsterZones::empty(5), array_fill(0, 5, null), null, 0, 1);
+        $player = new DuelPlayerState('p1', 8000, $zones, MonsterZones::empty(5), SpellTrapZones::empty(5), null, 0, 1);
         $reflection = new ReflectionClass($player);
 
         self::assertTrue($reflection->isReadOnly());
